@@ -5,9 +5,15 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	
+	"portfolio-website-backend/internal/database"
 )
 
 func main() {
+	// Connect to Database and run migrations
+	database.ConnectDB()
+	database.RunAutomigrations()
+
 	// Initialize Gin router
 	r := gin.Default()
 
