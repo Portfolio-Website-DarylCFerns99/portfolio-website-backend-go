@@ -3,8 +3,6 @@ package database
 import (
 	"log"
 
-	"github.com/caarlos0/env/v11"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
