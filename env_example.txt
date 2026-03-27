@@ -1,0 +1,26 @@
+DATABASE_URL=postgresql://<db_user>:<db_password>@<db_host>:<db_port>/<db_name>?sslmode=require&channel_binding=require
+API_PREFIX=/api/v1
+DEBUG=True
+MAX_DB_RETRIES=3
+RETRY_BACKOFF=0.5
+GITHUB_TOKEN=<github_token>
+ADMIN_API_KEY=<admin_api_key>
+JWT_SECRET_KEY=<jwt_secret_key>
+ACCESS_TOKEN_EXPIRE_MINUTES=120
+CORS_ORIGINS=http://[IP_ADDRESS]
+
+# SENDGRID_API_KEY=<sendgrid_api_key>
+# SENDGRID_NOTIFICATION_TEMPLATE_ID=<sendgrid_notification_template_id>
+# SENDGRID_CONFIRMATION_TEMPLATE_ID=<sendgrid_confirmation_template_id>
+
+MAILGUN_API_URL="https://api.mailgun.net/v3/<mailgun_domain>"
+MAILGUN_API_KEY=<mailgun_api_key>
+MAILGUN_NOTIFICATION_TEMPLATE_ID=<mailgun_notification_template_id>
+MAILGUN_CONFIRMATION_TEMPLATE_ID=<mailgun_confirmation_template_id>
+
+MAILGUN_FROM_EMAIL=<mailgun_from_email>
+# MAILGUN_FROM_PASSWORD=<mailgun_from_password>
+ADMIN_EMAIL=<admin_email>
+# ADMIN_PASSWORD=<admin_password>
+
+GEMINI_API_KEY=<gemini_api_key>

@@ -36,3 +36,10 @@ func ConnectDB() {
 	DB = db
 	log.Println("Database connection established")
 }
+
+func GetDB() (*gorm.DB, error) {
+	if DB == nil {
+		ConnectDB()
+	}
+	return DB, nil
+}

@@ -1,0 +1,658 @@
+basePath: /api/v1
+definitions:
+  dto.ProjectData:
+    properties:
+      additional_data:
+        additionalProperties: true
+        type: object
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      project_category_id:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  dto.PublicDataResponse:
+    properties:
+      about:
+        additionalProperties: true
+        type: object
+      availability:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      featuredSkills:
+        items:
+          $ref: '#/definitions/dto.SkillData'
+        type: array
+      heroStats:
+        additionalProperties: true
+        type: object
+      location:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      projectCategories:
+        items:
+          $ref: '#/definitions/models.ProjectCategory'
+        type: array
+      projects:
+        items:
+          $ref: '#/definitions/dto.ProjectData'
+        type: array
+      projectsSection:
+        additionalProperties: true
+        type: object
+      reviews:
+        items:
+          $ref: '#/definitions/models.Review'
+        type: array
+      skillGroups:
+        items:
+          $ref: '#/definitions/dto.SkillGroupData'
+        type: array
+      skillsSection:
+        additionalProperties: true
+        type: object
+      socialLinks:
+        additionalProperties: true
+        type: object
+      surname:
+        type: string
+      timelineData:
+        items:
+          $ref: '#/definitions/dto.TimelineItem'
+        type: array
+      timelineSection:
+        additionalProperties: true
+        type: object
+      title:
+        type: string
+    type: object
+  dto.SkillData:
+    properties:
+      color:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      proficiency:
+        type: integer
+    type: object
+  dto.SkillGroupData:
+    properties:
+      name:
+        type: string
+      skills:
+        items:
+          $ref: '#/definitions/dto.SkillData'
+        type: array
+    type: object
+  dto.TimelineItem:
+    properties:
+      company:
+        type: string
+      degree:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      institution:
+        type: string
+      period:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      year:
+        type: integer
+    type: object
+  handlers.loginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handlers.visibilityReq:
+    properties:
+      is_visible:
+        type: boolean
+    type: object
+  models.Experience:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: string
+      is_visible:
+        type: boolean
+      organization:
+        type: string
+      start_date:
+        type: string
+      title:
+        type: string
+      type:
+        description: '''experience'' or ''education'''
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.JSONMap:
+    additionalProperties: true
+    type: object
+  models.ProjectCategory:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      is_visible:
+        type: boolean
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Review:
+    properties:
+      avatar:
+        type: string
+      company:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_visible:
+        type: boolean
+      name:
+        type: string
+      position:
+        type: string
+      rating:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  models.User:
+    properties:
+      about:
+        $ref: '#/definitions/models.JSONMap'
+      availability:
+        type: string
+      avatar:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      featured_skill_ids:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      location:
+        type: string
+      name:
+        description: Optional fields
+        type: string
+      phone:
+        type: string
+      social_links:
+        $ref: '#/definitions/models.JSONMap'
+      surname:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      username:
+        description: Required fields
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is the backend API for my portfolio website.
+  title: Portfolio Website API
+  version: "1.0"
+paths:
+  /experiences:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of experiences (requires auth)
+      parameters:
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      - description: Type (experience/education)
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get experiences
+      tags:
+      - experiences
+    post:
+      consumes:
+      - application/json
+      description: Create a new experience or education entry
+      parameters:
+      - description: Experience Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Experience'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Experience'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create experience
+      tags:
+      - experiences
+  /experiences/{experience_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an experience
+      parameters:
+      - description: Experience ID
+        in: path
+        name: experience_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete experience
+      tags:
+      - experiences
+    get:
+      consumes:
+      - application/json
+      description: Get a single experience by its ID
+      parameters:
+      - description: Experience ID
+        in: path
+        name: experience_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Experience'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get experience by ID
+      tags:
+      - experiences
+    put:
+      consumes:
+      - application/json
+      description: Update an existing experience
+      parameters:
+      - description: Experience ID
+        in: path
+        name: experience_id
+        required: true
+        type: string
+      - description: Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Experience'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update experience
+      tags:
+      - experiences
+  /experiences/{experience_id}/visibility:
+    patch:
+      consumes:
+      - application/json
+      description: Change the visibility of an experience
+      parameters:
+      - description: Experience ID
+        in: path
+        name: experience_id
+        required: true
+        type: string
+      - description: Visibility Update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.visibilityReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Experience'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update experience visibility
+      tags:
+      - experiences
+  /experiences/public/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of public experiences
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      - description: Type (experience/education)
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get public experiences
+      tags:
+      - experiences
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login and get an access token
+      parameters:
+      - description: Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - users
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Get the profile of the currently logged in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get current user profile
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update the profile of the currently logged in user
+      parameters:
+      - description: Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update user profile
+      tags:
+      - users
+  /public-data/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get public portfolio data for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PublicDataResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get public data
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

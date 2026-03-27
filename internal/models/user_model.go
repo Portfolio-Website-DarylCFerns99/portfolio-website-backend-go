@@ -10,12 +10,19 @@ import (
 type JSONStringArray []string
 
 func (j *JSONStringArray) Scan(value interface{}) error {
-	bytes, ok := value.([]byte)
-	if !ok {
-		return errors.New("type assertion to []byte failed")
+	if value == nil {
+		*j = make(JSONStringArray, 0)
+		return nil
 	}
 
-	return json.Unmarshal(bytes, &j)
+	switch v := value.(type) {
+	case []byte:
+		return json.Unmarshal(v, j)
+	case string:
+		return json.Unmarshal([]byte(v), j)
+	default:
+		return errors.New("type assertion to []byte failed for JSONStringArray")
+	}
 }
 
 func (j JSONStringArray) Value() (driver.Value, error) {
@@ -29,12 +36,19 @@ func (j JSONStringArray) Value() (driver.Value, error) {
 type JSONMap map[string]interface{}
 
 func (j *JSONMap) Scan(value interface{}) error {
-	bytes, ok := value.([]byte)
-	if !ok {
-		return errors.New("type assertion to []byte failed")
+	if value == nil {
+		*j = make(JSONMap)
+		return nil
 	}
 
-	return json.Unmarshal(bytes, &j)
+	switch v := value.(type) {
+	case []byte:
+		return json.Unmarshal(v, j)
+	case string:
+		return json.Unmarshal([]byte(v), j)
+	default:
+		return errors.New("type assertion to []byte failed for JSONMap")
+	}
 }
 
 func (j JSONMap) Value() (driver.Value, error) {
@@ -43,7 +57,6 @@ func (j JSONMap) Value() (driver.Value, error) {
 	}
 	return json.Marshal(j)
 }
-
 
 type User struct {
 	BaseModel
