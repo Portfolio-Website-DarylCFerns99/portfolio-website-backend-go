@@ -1,21 +1,19 @@
 package models
 
-import (
-	"github.com/google/uuid"
-)
+import "github.com/google/uuid"
 
 type ChatSession struct {
 	BaseModel
 
-	Messages []ChatMessage `gorm:"foreignKey:SessionID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"messages,omitempty"`
+	UserID   *uuid.UUID    `gorm:"type:uuid;index" json:"user_id,omitempty"`
+	Title    *string       `gorm:"type:varchar(200)" json:"title,omitempty"`
+	Messages []ChatMessage `gorm:"foreignKey:SessionID" json:"messages,omitempty"`
 }
 
 type ChatMessage struct {
 	BaseModel
 
 	SessionID uuid.UUID `gorm:"type:uuid;not null;index" json:"session_id"`
-	Sender    string    `gorm:"type:varchar(50);not null" json:"sender"` // 'user' or 'bot'
-	Content   string    `gorm:"type:text;not null" json:"content"`       
-
-	Session   *ChatSession `gorm:"foreignKey:SessionID" json:"session,omitempty"`
+	Role      string    `gorm:"type:varchar(20);not null" json:"role"` // 'user' or 'assistant'
+	Content   string    `gorm:"type:text;not null" json:"content"`
 }
