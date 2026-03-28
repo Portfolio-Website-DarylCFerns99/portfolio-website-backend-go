@@ -21,12 +21,11 @@ func SetupTestDB() *gorm.DB {
 
 	dsn := os.Getenv("TEST_DATABASE_URL")
 	if dsn == "" {
-		// Fallback to the primary dev database if a test specific URL isn't explicitly configured
 		dsn = os.Getenv("DATABASE_URL")
 	}
 
 	if dsn == "" {
-		dsn = "host=localhost user=postgres password=postgres dbname=portfolio port=5432 sslmode=disable"
+		dsn = "postgresql://postgres:postgres@localhost:5432/portfolio?sslmode=disable"
 	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
