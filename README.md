@@ -121,6 +121,6 @@ This project leverages native local Go testing infrastructure supplemented by ro
 To trigger validations across repositories, services, and handlers:
 ```bash
 go clean -testcache
-go test ./... -v
+go test -p 1 ./... -v -failfast
 ```
 *(Note: Full integration tests for the Service and Repository layers require a live Postgres instance. By default, the testing suite falls back to `postgresql://postgres:postgres@localhost:5432/portfolio_test?sslmode=disable`. You can explicitly override this by setting `TEST_DATABASE_URL` in your `.env` file.)*
