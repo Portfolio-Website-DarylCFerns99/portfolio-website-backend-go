@@ -21,21 +21,21 @@ type Config struct {
 	RetryBackoff float64 `env:"RETRY_BACKOFF" envDefault:"0.5"`
 
 	// Authentication settings
-	JWTSecretKey           string `env:"JWT_SECRET_KEY" envDefault:"YOUR_DEFAULT_SECRET_KEY_CHANGE_THIS"`
-	AccessTokenExpireMins  int    `env:"ACCESS_TOKEN_EXPIRE_MINUTES" envDefault:"30"`
+	JWTSecretKey          string `env:"JWT_SECRET_KEY" envDefault:"YOUR_DEFAULT_SECRET_KEY_CHANGE_THIS"`
+	AccessTokenExpireMins int    `env:"ACCESS_TOKEN_EXPIRE_MINUTES" envDefault:"30"`
 
 	// Mailgun settings
-	MailgunAPIURL                  string `env:"MAILGUN_API_URL"`
-	MailgunAPIKey                  string `env:"MAILGUN_API_KEY"`
-	MailgunFromEmail               string `env:"MAILGUN_FROM_EMAIL" envDefault:"your-email@domain.com"`
-	AdminEmail                     string `env:"ADMIN_EMAIL" envDefault:"your-email@domain.com"`
-	MailgunNotificationTemplateID  string `env:"MAILGUN_NOTIFICATION_TEMPLATE_ID" envDefault:"test-id"`
-	MailgunConfirmationTemplateID  string `env:"MAILGUN_CONFIRMATION_TEMPLATE_ID" envDefault:"test-id"`
+	MailgunAPIURL                 string `env:"MAILGUN_API_URL"`
+	MailgunAPIKey                 string `env:"MAILGUN_API_KEY"`
+	MailgunFromEmail              string `env:"MAILGUN_FROM_EMAIL" envDefault:"your-email@domain.com"`
+	AdminEmail                    string `env:"ADMIN_EMAIL" envDefault:"your-email@domain.com"`
+	MailgunNotificationTemplateID string `env:"MAILGUN_NOTIFICATION_TEMPLATE_ID" envDefault:"test-id"`
+	MailgunConfirmationTemplateID string `env:"MAILGUN_CONFIRMATION_TEMPLATE_ID" envDefault:"test-id"`
 
 	// LLM settings
-	GeminiAPIKey          string `env:"GEMINI_API_KEY"`
-	GeminiModel           string `env:"GEMINI_MODEL"`
-	GeminiEmbeddingModel  string `env:"GEMINI_EMBEDDING_MODEL"`
+	GeminiAPIKey         string `env:"GEMINI_API_KEY"`
+	GeminiModel          string `env:"GEMINI_MODEL"`
+	GeminiEmbeddingModel string `env:"GEMINI_EMBEDDING_MODEL"`
 
 	// CORS settings
 	CorsOriginsRaw string   `env:"CORS_ORIGINS" envDefault:"*"`

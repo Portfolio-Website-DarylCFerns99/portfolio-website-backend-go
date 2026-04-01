@@ -25,7 +25,7 @@ func SetupTestDB() *gorm.DB {
 	}
 
 	if dsn == "" {
-		dsn = "postgresql://postgres:postgres@localhost:5432/portfolio?sslmode=disable"
+		dsn = "postgresql://postgres:postgres@localhost:5432/portfolio_test?sslmode=disable"
 	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
