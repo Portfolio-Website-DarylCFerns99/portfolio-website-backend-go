@@ -1,6 +1,69 @@
 basePath: /api/v1
 definitions:
-  dto.ProjectData:
+  internal_handlers.CategoryCreateReq:
+    properties:
+      description:
+        type: string
+      is_visible:
+        type: boolean
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  internal_handlers.ProjectCreateReq:
+    properties:
+      description:
+        type: string
+      image:
+        type: string
+      is_visible:
+        type: boolean
+      project_category_id:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        enum:
+        - github
+        - custom
+        type: string
+      url:
+        type: string
+    required:
+    - title
+    - type
+    type: object
+  internal_handlers.categoryVisibilityReq:
+    properties:
+      is_visible:
+        type: boolean
+    type: object
+  internal_handlers.loginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  internal_handlers.projectVisibilityReq:
+    properties:
+      is_visible:
+        type: boolean
+    type: object
+  internal_handlers.visibilityReq:
+    properties:
+      is_visible:
+        type: boolean
+    type: object
+  portfolio-website-backend_internal_dto.ProjectData:
     properties:
       additional_data:
         additionalProperties: true
@@ -26,7 +89,7 @@ definitions:
       url:
         type: string
     type: object
-  dto.PublicDataResponse:
+  portfolio-website-backend_internal_dto.PublicDataResponse:
     properties:
       about:
         additionalProperties: true
@@ -39,7 +102,7 @@ definitions:
         type: string
       featuredSkills:
         items:
-          $ref: '#/definitions/dto.SkillData'
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillData'
         type: array
       heroStats:
         additionalProperties: true
@@ -52,22 +115,22 @@ definitions:
         type: string
       projectCategories:
         items:
-          $ref: '#/definitions/models.ProjectCategory'
+          $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
         type: array
       projects:
         items:
-          $ref: '#/definitions/dto.ProjectData'
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.ProjectData'
         type: array
       projectsSection:
         additionalProperties: true
         type: object
       reviews:
         items:
-          $ref: '#/definitions/models.Review'
+          $ref: '#/definitions/portfolio-website-backend_internal_models.Review'
         type: array
       skillGroups:
         items:
-          $ref: '#/definitions/dto.SkillGroupData'
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillGroupData'
         type: array
       skillsSection:
         additionalProperties: true
@@ -79,7 +142,7 @@ definitions:
         type: string
       timelineData:
         items:
-          $ref: '#/definitions/dto.TimelineItem'
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.TimelineItem'
         type: array
       timelineSection:
         additionalProperties: true
@@ -87,7 +150,7 @@ definitions:
       title:
         type: string
     type: object
-  dto.SkillData:
+  portfolio-website-backend_internal_dto.SkillData:
     properties:
       color:
         type: string
@@ -100,16 +163,16 @@ definitions:
       proficiency:
         type: integer
     type: object
-  dto.SkillGroupData:
+  portfolio-website-backend_internal_dto.SkillGroupData:
     properties:
       name:
         type: string
       skills:
         items:
-          $ref: '#/definitions/dto.SkillData'
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillData'
         type: array
     type: object
-  dto.TimelineItem:
+  portfolio-website-backend_internal_dto.TimelineItem:
     properties:
       company:
         type: string
@@ -130,22 +193,7 @@ definitions:
       year:
         type: integer
     type: object
-  handlers.loginRequest:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  handlers.visibilityReq:
-    properties:
-      is_visible:
-        type: boolean
-    type: object
-  models.Experience:
+  portfolio-website-backend_internal_models.Experience:
     properties:
       created_at:
         type: string
@@ -171,10 +219,52 @@ definitions:
       user_id:
         type: string
     type: object
-  models.JSONMap:
+  portfolio-website-backend_internal_models.JSONMap:
     additionalProperties: true
     type: object
-  models.ProjectCategory:
+  portfolio-website-backend_internal_models.Project:
+    properties:
+      additional_data:
+        allOf:
+        - $ref: '#/definitions/portfolio-website-backend_internal_models.JSONMap'
+        description: Store complete GitHub API response
+      created_at:
+        type: string
+      description:
+        type: string
+      expiry_date:
+        description: Expiry date for non-custom projects
+        type: string
+      id:
+        type: string
+      image:
+        description: Base64 image data
+        type: string
+      is_visible:
+        type: boolean
+      project_category:
+        $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+      project_category_id:
+        type: string
+      published_at:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        description: e.g. 'github', 'custom'
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+      user_id:
+        type: string
+    type: object
+  portfolio-website-backend_internal_models.ProjectCategory:
     properties:
       created_at:
         type: string
@@ -188,8 +278,10 @@ definitions:
         type: string
       updated_at:
         type: string
+      user_id:
+        type: string
     type: object
-  models.Review:
+  portfolio-website-backend_internal_models.Review:
     properties:
       avatar:
         type: string
@@ -212,10 +304,10 @@ definitions:
       updated_at:
         type: string
     type: object
-  models.User:
+  portfolio-website-backend_internal_models.User:
     properties:
       about:
-        $ref: '#/definitions/models.JSONMap'
+        $ref: '#/definitions/portfolio-website-backend_internal_models.JSONMap'
       availability:
         type: string
       avatar:
@@ -238,7 +330,7 @@ definitions:
       phone:
         type: string
       social_links:
-        $ref: '#/definitions/models.JSONMap'
+        $ref: '#/definitions/portfolio-website-backend_internal_models.JSONMap'
       surname:
         type: string
       title:
@@ -307,14 +399,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.Experience'
+          $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Experience'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -377,7 +469,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Experience'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -416,7 +508,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Experience'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -448,14 +540,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.visibilityReq'
+          $ref: '#/definitions/internal_handlers.visibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Experience'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -526,7 +618,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.loginRequest'
+          $ref: '#/definitions/internal_handlers.loginRequest'
       produces:
       - application/json
       responses:
@@ -564,7 +656,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.User'
         "401":
           description: Unauthorized
           schema:
@@ -593,7 +685,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.User'
         "400":
           description: Bad Request
           schema:
@@ -614,6 +706,510 @@ paths:
       summary: Update user profile
       tags:
       - users
+  /project-categories:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of project categories (requires auth)
+      parameters:
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get project categories
+      tags:
+      - project-categories
+    post:
+      consumes:
+      - application/json
+      description: Create a new project category
+      parameters:
+      - description: Category Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_handlers.CategoryCreateReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create project category
+      tags:
+      - project-categories
+  /project-categories/{category_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a project category
+      parameters:
+      - description: Category ID
+        in: path
+        name: category_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete project category
+      tags:
+      - project-categories
+    get:
+      consumes:
+      - application/json
+      description: Get a single project category by its ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: category_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get project category by ID
+      tags:
+      - project-categories
+    put:
+      consumes:
+      - application/json
+      description: Update an existing project category
+      parameters:
+      - description: Category ID
+        in: path
+        name: category_id
+        required: true
+        type: string
+      - description: Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update project category
+      tags:
+      - project-categories
+  /project-categories/{category_id}/visibility:
+    patch:
+      consumes:
+      - application/json
+      description: Change the visibility of a project category
+      parameters:
+      - description: Category ID
+        in: path
+        name: category_id
+        required: true
+        type: string
+      - description: Visibility Update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_handlers.categoryVisibilityReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update project category visibility
+      tags:
+      - project-categories
+  /project-categories/public/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of public project categories
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get public project categories
+      tags:
+      - project-categories
+  /projects:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of projects (requires auth)
+      parameters:
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get projects
+      tags:
+      - projects
+    post:
+      consumes:
+      - application/json
+      description: Create a new project entry
+      parameters:
+      - description: Project Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_handlers.ProjectCreateReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create project
+      tags:
+      - projects
+  /projects/{project_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a project
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete project
+      tags:
+      - projects
+    get:
+      consumes:
+      - application/json
+      description: Get a single project by its ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get project by ID
+      tags:
+      - projects
+    put:
+      consumes:
+      - application/json
+      description: Update an existing project
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update project
+      tags:
+      - projects
+  /projects/{project_id}/visibility:
+    patch:
+      consumes:
+      - application/json
+      description: Change the visibility of a project
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Visibility Update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_handlers.projectVisibilityReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update project visibility
+      tags:
+      - projects
+  /projects/public/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of public projects
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get public projects
+      tags:
+      - projects
   /public-data/{user_id}:
     get:
       consumes:
@@ -631,7 +1227,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PublicDataResponse'
+            $ref: '#/definitions/portfolio-website-backend_internal_dto.PublicDataResponse'
         "400":
           description: Bad Request
           schema:

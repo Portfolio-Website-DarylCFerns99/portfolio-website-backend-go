@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
+	_ "portfolio-website-backend/internal/dto"
 	"portfolio-website-backend/internal/models"
 	"portfolio-website-backend/internal/repository"
 	"portfolio-website-backend/internal/security"

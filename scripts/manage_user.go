@@ -102,7 +102,7 @@ func main() {
 		if resp.StatusCode >= 400 {
 			log.Fatalf("Server returned error %d: %s", resp.StatusCode, string(body))
 		}
-		
+
 		log.Printf("List of Users:\n%s\n", string(body))
 
 	case "get":

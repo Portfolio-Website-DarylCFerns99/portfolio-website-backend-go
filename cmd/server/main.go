@@ -41,10 +41,14 @@ func main() {
 	// Initialize Repositories
 	userRepo := repository.NewUserRepository(db)
 	experienceRepo := repository.NewExperienceRepository(db)
+	projectRepo := repository.NewProjectRepository(db)
+	projectCategoryRepo := repository.NewProjectCategoryRepository(db)
 
 	// Initialize Services
 	userService := services.NewUserService(db, userRepo)
 	experienceService := services.NewExperienceService(experienceRepo)
+	projectService := services.NewProjectService(projectRepo)
+	projectCategoryService := services.NewProjectCategoryService(projectCategoryRepo)
 
 	// Initialize Gin router
 	r := gin.Default()
@@ -65,10 +69,14 @@ func main() {
 	// Initialize Handlers
 	userHandler := handlers.NewUserHandler(userService, userRepo)
 	experienceHandler := handlers.NewExperienceHandler(experienceService)
+	projectHandler := handlers.NewProjectHandler(projectService)
+	projectCategoryHandler := handlers.NewProjectCategoryHandler(projectCategoryService)
 
 	// Register Routes
 	userHandler.RegisterRoutes(apiGroup, authMiddleware, adminAuthMiddleware)
 	experienceHandler.RegisterRoutes(apiGroup, authMiddleware)
+	projectHandler.RegisterRoutes(apiGroup, authMiddleware)
+	projectCategoryHandler.RegisterRoutes(apiGroup, authMiddleware)
 
 	// Swagger API Docs
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

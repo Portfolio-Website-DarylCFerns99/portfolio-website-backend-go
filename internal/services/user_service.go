@@ -42,7 +42,7 @@ func (s *userService) ValidateFeaturedSkills(userID uuid.UUID, skillIDs []string
 
 	// Convert string IDs to UUIDs for querying
 	var validSkillIDs []string
-	
+
 	// Query the database to find which skill IDs exist
 	// In Python this was: `self.db.query(Skill.id).filter(Skill.id.in_(skill_ids)).all()`
 	var existingSkills []models.Skill
@@ -99,7 +99,7 @@ func calculateTotalExperience(experiences []models.Experience) interface{} {
 		if exp.EndDate != nil {
 			end = *exp.EndDate
 		}
-		
+
 		days := end.Sub(exp.StartDate).Hours() / 24.0
 		years := days / 365.25
 		totalYears += years
