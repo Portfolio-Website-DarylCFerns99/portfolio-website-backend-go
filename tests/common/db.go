@@ -1,14 +1,17 @@
 package common
 
 import (
+	"fmt"
 	"log"
 	"os"
 
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	"portfolio-website-backend/internal/database"
+	"portfolio-website-backend/internal/models"
 )
 
 // SetupTestDB initializes a connection to a real Postgres instance specifically for testing.
@@ -38,4 +41,21 @@ func SetupTestDB() *gorm.DB {
 	database.RunAutomigrations()
 
 	return db
+}
+
+// CreateTestUser inserts a minimal User row with the given UUID into the test database.
+// This is required before creating any records with a user_id FK (experiences, skills, etc.).
+func CreateTestUser(db *gorm.DB, userID uuid.UUID) *models.User {
+	usernameVal := fmt.Sprintf("testuser_%s", userID.String()[:8])
+	emailVal := fmt.Sprintf("%s@test.com", usernameVal)
+	user := &models.User{
+		BaseModel:      models.BaseModel{ID: userID},
+		Username:       usernameVal,
+		Email:          emailVal,
+		HashedPassword: "$2a$10$placeholder_hash_for_tests",
+	}
+	if err := db.Create(user).Error; err != nil {
+		log.Fatalf("CreateTestUser: failed to insert test user %s: %v", userID, err)
+	}
+	return user
 }

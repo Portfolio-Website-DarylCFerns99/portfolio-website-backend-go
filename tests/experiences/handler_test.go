@@ -28,7 +28,7 @@ func TestExperienceHandler_Create(t *testing.T) {
 		Title:     "New Job",
 	}, nil)
 
-	body, _ := json.Marshal(map[string]string{"title": "New Job", "type": "experience", "organization": "ACME", "start_date": "2024-01-01T00:00:00Z"})
+	body, _ := json.Marshal(map[string]string{"title": "New Job", "type": "experience", "organization": "ACME", "start_date": "2024-01-01"})
 	req, _ := http.NewRequest(http.MethodPost, "/experiences", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()

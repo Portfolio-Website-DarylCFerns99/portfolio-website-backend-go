@@ -15,6 +15,7 @@ func TestProjectRepo_CreateAndGet(t *testing.T) {
 	repo := repository.NewProjectRepository(db)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	proj := &models.Project{
 		Title:     "Awesome Go Tool",
 		Type:      "custom",
@@ -37,6 +38,7 @@ func TestProjectRepo_GetVisible(t *testing.T) {
 	repo := repository.NewProjectRepository(db)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	repo.Create(&models.Project{Type: "custom", IsVisible: true, Title: "Visible Project", UserID: userID})
 	repo.Create(&models.Project{Type: "custom", IsVisible: false, Title: "Hidden Project", UserID: userID})
 
@@ -57,6 +59,7 @@ func TestProjectRepo_UpdateAndDelete(t *testing.T) {
 	repo := repository.NewProjectRepository(db)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	created, _ := repo.Create(&models.Project{Title: "Old Name", IsVisible: true, Type: "custom", UserID: userID})
 
 	// Update

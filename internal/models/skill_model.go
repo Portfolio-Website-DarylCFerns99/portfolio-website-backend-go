@@ -5,14 +5,18 @@ import "github.com/google/uuid"
 type SkillGroup struct {
 	BaseModel
 
-	Name      string  `gorm:"type:varchar(100);not null" json:"name"`
-	IsVisible bool    `gorm:"default:false" json:"is_visible"`
-	Skills    []Skill `gorm:"foreignKey:SkillGroupID" json:"skills,omitempty"`
+	UserID    uuid.UUID `gorm:"type:uuid;not null;index" json:"user_id"`
+	User      *User     `gorm:"foreignKey:UserID;references:ID" json:"-"`
+	Name      string    `gorm:"type:varchar(100);not null" json:"name"`
+	IsVisible bool      `gorm:"default:false" json:"is_visible"`
+	Skills    []Skill   `gorm:"foreignKey:SkillGroupID" json:"skills,omitempty"`
 }
 
 type Skill struct {
 	BaseModel
 
+	UserID       uuid.UUID `gorm:"type:uuid;not null;index" json:"user_id"`
+	User         *User     `gorm:"foreignKey:UserID;references:ID" json:"-"`
 	SkillGroupID uuid.UUID `gorm:"type:uuid;not null;index" json:"skill_group_id"`
 	Name         string    `gorm:"type:varchar(100);not null" json:"name"`
 	Proficiency  int       `gorm:"default:0" json:"proficiency"`

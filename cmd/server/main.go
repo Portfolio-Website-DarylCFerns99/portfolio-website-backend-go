@@ -23,7 +23,7 @@ import (
 // @title           Portfolio Website API
 // @version         1.0
 // @description     This is the backend API for my portfolio website.
-// @host            localhost:8000
+// @host            10.5.0.2:8000
 // @BasePath        /api/v1
 // @securityDefinitions.apikey BearerAuth
 // @in header
@@ -43,12 +43,16 @@ func main() {
 	experienceRepo := repository.NewExperienceRepository(db)
 	projectRepo := repository.NewProjectRepository(db)
 	projectCategoryRepo := repository.NewProjectCategoryRepository(db)
+	reviewRepo := repository.NewReviewRepository(db)
+	skillRepo := repository.NewSkillRepository(db)
 
 	// Initialize Services
 	userService := services.NewUserService(db, userRepo)
 	experienceService := services.NewExperienceService(experienceRepo)
 	projectService := services.NewProjectService(projectRepo)
 	projectCategoryService := services.NewProjectCategoryService(projectCategoryRepo)
+	reviewService := services.NewReviewService(reviewRepo)
+	skillService := services.NewSkillService(skillRepo)
 
 	// Initialize Gin router
 	r := gin.Default()
@@ -71,12 +75,16 @@ func main() {
 	experienceHandler := handlers.NewExperienceHandler(experienceService)
 	projectHandler := handlers.NewProjectHandler(projectService)
 	projectCategoryHandler := handlers.NewProjectCategoryHandler(projectCategoryService)
+	reviewHandler := handlers.NewReviewHandler(reviewService)
+	skillHandler := handlers.NewSkillHandler(skillService)
 
 	// Register Routes
 	userHandler.RegisterRoutes(apiGroup, authMiddleware, adminAuthMiddleware)
 	experienceHandler.RegisterRoutes(apiGroup, authMiddleware)
 	projectHandler.RegisterRoutes(apiGroup, authMiddleware)
 	projectCategoryHandler.RegisterRoutes(apiGroup, authMiddleware)
+	reviewHandler.RegisterRoutes(apiGroup, authMiddleware)
+	skillHandler.RegisterRoutes(apiGroup, authMiddleware)
 
 	// Swagger API Docs
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -99,7 +107,7 @@ func main() {
 	log.Println("Server is starting on port 8000...")
 
 	// Start server
-	if err := r.Run(":8000"); err != nil {
+	if err := r.Run("10.5.0.2:8000"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

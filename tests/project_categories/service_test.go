@@ -17,6 +17,7 @@ func TestProjectCategoryService_CreateAndRetrieve(t *testing.T) {
 	svc := services.NewProjectCategoryService(repo)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	created, err := svc.CreateCategory(&models.ProjectCategory{
 		Name:      "Service Category",
 		IsVisible: false,
@@ -39,6 +40,7 @@ func TestProjectCategoryService_UpdateVisibility(t *testing.T) {
 	svc := services.NewProjectCategoryService(repo)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	created, _ := svc.CreateCategory(&models.ProjectCategory{Name: "Hidden Category", IsVisible: false, UserID: userID})
 
 	updated, err := svc.UpdateCategory(userID, created.ID, map[string]interface{}{"is_visible": true})

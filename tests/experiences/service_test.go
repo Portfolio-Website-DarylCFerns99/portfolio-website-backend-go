@@ -6,6 +6,7 @@ import (
 	"portfolio-website-backend/internal/services"
 	"portfolio-website-backend/tests/common"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -17,11 +18,13 @@ func TestExperienceService_CreateAndRetrieve(t *testing.T) {
 	svc := services.NewExperienceService(repo)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	created, err := svc.CreateExperience(&models.Experience{
 		Title:     "Service Role",
 		Type:      "experience",
 		IsVisible: false,
 		UserID:    userID,
+		StartDate: models.DateOnly{Time: time.Date(2021, 3, 1, 0, 0, 0, 0, time.UTC)},
 	})
 	assert.NoError(t, err)
 
@@ -40,7 +43,8 @@ func TestExperienceService_UpdateVisibility(t *testing.T) {
 	svc := services.NewExperienceService(repo)
 
 	userID := uuid.New()
-	created, _ := svc.CreateExperience(&models.Experience{Title: "Hidden Role", IsVisible: false, UserID: userID})
+	common.CreateTestUser(db, userID)
+	created, _ := svc.CreateExperience(&models.Experience{Title: "Hidden Role", IsVisible: false, UserID: userID, StartDate: models.DateOnly{Time: time.Date(2022, 5, 1, 0, 0, 0, 0, time.UTC)}})
 
 	// Toggle Visibility
 	updated, err := svc.UpdateExperienceVisibility(userID, created.ID, true)

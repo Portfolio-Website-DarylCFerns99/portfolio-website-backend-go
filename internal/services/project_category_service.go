@@ -11,7 +11,7 @@ import (
 
 type ProjectCategoryService interface {
 	CreateCategory(category *models.ProjectCategory) (*models.ProjectCategory, error)
-	GetCategories(userID uuid.UUID, skip, limit int, onlyVisible bool) ([]models.ProjectCategory, error)
+	GetCategories(userID uuid.UUID, skip, limit int, onlyVisible bool) ([]models.ProjectCategory, int64, error)
 	GetCategoryByID(userID uuid.UUID, id uuid.UUID, onlyVisible bool) (*models.ProjectCategory, error)
 	UpdateCategory(userID uuid.UUID, id uuid.UUID, updateData map[string]interface{}) (*models.ProjectCategory, error)
 	DeleteCategory(userID uuid.UUID, id uuid.UUID) error
@@ -30,7 +30,7 @@ func (s *projectCategoryService) CreateCategory(category *models.ProjectCategory
 	return s.repo.Create(category)
 }
 
-func (s *projectCategoryService) GetCategories(userID uuid.UUID, skip, limit int, onlyVisible bool) ([]models.ProjectCategory, error) {
+func (s *projectCategoryService) GetCategories(userID uuid.UUID, skip, limit int, onlyVisible bool) ([]models.ProjectCategory, int64, error) {
 	log.Printf("Retrieving project categories for user %s (skip=%d, limit=%d, only_visible=%v)", userID, skip, limit, onlyVisible)
 
 	if onlyVisible {

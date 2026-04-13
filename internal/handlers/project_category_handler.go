@@ -125,14 +125,17 @@ func (h *ProjectCategoryHandler) GetCategories(c *gin.Context) {
 
 	skip, limit := h.parseQueryArgs(c)
 
-	items, err := h.service.GetCategories(userID, skip, limit, false)
+	items, total, err := h.service.GetCategories(userID, skip, limit, false)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"detail": "Failed to fetch project categories"})
 		return
 	}
 
-	c.JSON(http.StatusOK, items)
+	c.JSON(http.StatusOK, gin.H{
+		"categories": items,
+		"total":      total,
+	})
 }
 
 // GetPublicCategories
@@ -158,14 +161,17 @@ func (h *ProjectCategoryHandler) GetPublicCategories(c *gin.Context) {
 
 	skip, limit := h.parseQueryArgs(c)
 
-	items, err := h.service.GetCategories(userID, skip, limit, true)
+	items, total, err := h.service.GetCategories(userID, skip, limit, true)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"detail": "Failed to fetch public project categories"})
 		return
 	}
 
-	c.JSON(http.StatusOK, items)
+	c.JSON(http.StatusOK, gin.H{
+		"categories": items,
+		"total":      total,
+	})
 }
 
 // GetCategory
