@@ -28,8 +28,9 @@ func NewUserHandler(userService services.UserService, userRepo repository.UserRe
 // RegisterRoutes registers the user endpoints
 func (h *UserHandler) RegisterRoutes(r *gin.RouterGroup, authMiddleware gin.HandlerFunc, adminAuthMiddleware gin.HandlerFunc) {
 	// Public routes
-	r.POST("/login", h.Login)
-	r.GET("/public-data/:user_id", h.GetPublicData)
+	users := r.Group("/users")
+	users.POST("/login", h.Login)
+	users.GET("/public-data/:user_id", h.GetPublicData)
 
 	// Admin routes
 	admin := r.Group("/admin/users")
@@ -41,17 +42,16 @@ func (h *UserHandler) RegisterRoutes(r *gin.RouterGroup, authMiddleware gin.Hand
 	}
 
 	// Protected routes
-	protected := r.Group("/")
-	protected.Use(authMiddleware)
+	users.Use(authMiddleware)
 	{
-		protected.GET("/profile", h.GetProfile)
-		protected.PUT("/profile", h.UpdateProfile)
+		users.GET("/profile", h.GetProfile)
+		users.PUT("/profile", h.UpdateProfile)
 	}
 }
 
 type loginRequest struct {
-	Username string `form:"username" binding:"required"`
-	Password string `form:"password" binding:"required"`
+	Username string `form:"username" json:"username" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
 }
 
 // Login
@@ -65,7 +65,7 @@ type loginRequest struct {
 // @Failure      400      {object}  map[string]interface{}
 // @Failure      401      {object}  map[string]interface{}
 // @Failure      500      {object}  map[string]interface{}
-// @Router       /login [post]
+// @Router       /users/login [post]
 func (h *UserHandler) Login(c *gin.Context) {
 	var req loginRequest
 	if err := c.ShouldBind(&req); err != nil {
@@ -107,7 +107,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Security     BearerAuth
 // @Success      200      {object}  models.User
 // @Failure      401      {object}  map[string]interface{}
-// @Router       /profile [get]
+// @Router       /users/profile [get]
 func (h *UserHandler) GetProfile(c *gin.Context) {
 	user, exists := c.Get("current_user")
 	if !exists {
@@ -130,7 +130,7 @@ func (h *UserHandler) GetProfile(c *gin.Context) {
 // @Failure      400      {object}  map[string]interface{}
 // @Failure      401      {object}  map[string]interface{}
 // @Failure      500      {object}  map[string]interface{}
-// @Router       /profile [put]
+// @Router       /users/profile [put]
 func (h *UserHandler) UpdateProfile(c *gin.Context) {
 	userObj, exists := c.Get("current_user")
 	if !exists {
@@ -185,7 +185,7 @@ func (h *UserHandler) UpdateProfile(c *gin.Context) {
 // @Failure      400      {object}  map[string]interface{}
 // @Failure      404      {object}  map[string]interface{}
 // @Failure      500      {object}  map[string]interface{}
-// @Router       /public-data/{user_id} [get]
+// @Router       /users/public-data/{user_id} [get]
 func (h *UserHandler) GetPublicData(c *gin.Context) {
 	userIDStr := c.Param("user_id")
 	userID, err := uuid.Parse(userIDStr)

@@ -64,7 +64,7 @@ func TestProjectCategoryHandler_GetCategories(t *testing.T) {
 	testUser := &models.User{BaseModel: models.BaseModel{ID: uuid.New()}}
 	r := common.SetupRouter(testUser, handler.RegisterRoutes)
 
-	mockSvc.On("GetCategories", testUser.ID, 0, 100, false).Return([]models.ProjectCategory{}, nil)
+	mockSvc.On("GetCategories", testUser.ID, 0, 100, false).Return([]models.ProjectCategory{}, int64(0), nil)
 
 	req, _ := http.NewRequest(http.MethodGet, "/project-categories", nil)
 	w := httptest.NewRecorder()
@@ -101,7 +101,7 @@ func TestProjectCategoryHandler_GetPublic(t *testing.T) {
 	r := common.SetupRouter(nil, handler.RegisterRoutes)
 
 	targetUserID := uuid.New()
-	mockSvc.On("GetCategories", targetUserID, 0, 100, true).Return([]models.ProjectCategory{}, nil)
+	mockSvc.On("GetCategories", targetUserID, 0, 100, true).Return([]models.ProjectCategory{}, int64(0), nil)
 
 	req, _ := http.NewRequest(http.MethodGet, "/project-categories/public/"+targetUserID.String(), nil)
 	w := httptest.NewRecorder()

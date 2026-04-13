@@ -87,6 +87,12 @@ func (r *userRepository) Update(id uuid.UUID, data map[string]interface{}) (*mod
 	if err := r.db.Model(&user).Updates(data).Error; err != nil {
 		return nil, err
 	}
+
+	// Reload the user to ensure all fields (especially custom JSON arrays) are refreshed
+	if err := r.db.First(&user, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+
 	return &user, nil
 }
 

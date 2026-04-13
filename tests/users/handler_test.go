@@ -44,7 +44,7 @@ func TestLogin_Success(t *testing.T) {
 	}
 	jsonBody, _ := json.Marshal(loginReq)
 
-	req, _ := http.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest(http.MethodPost, "/users/login", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()
@@ -81,7 +81,7 @@ func TestLogin_InvalidCredentials(t *testing.T) {
 	}
 	jsonBody, _ := json.Marshal(loginReq)
 
-	req, _ := http.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest(http.MethodPost, "/users/login", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()
@@ -106,7 +106,7 @@ func TestGetPublicData_Success(t *testing.T) {
 
 	mockSvc.On("GetPublicPortfolioData", testID).Return(publicData, nil)
 
-	req, _ := http.NewRequest(http.MethodGet, "/public-data/"+testID.String(), nil)
+	req, _ := http.NewRequest(http.MethodGet, "/users/public-data/"+testID.String(), nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -123,7 +123,7 @@ func TestGetPublicData_InvalidUUID(t *testing.T) {
 	handler := handlers.NewUserHandler(mockSvc, mockRepo)
 	r := common.SetupRouterWithAdmin(nil, nil, nil, handler.RegisterRoutes)
 
-	req, _ := http.NewRequest(http.MethodGet, "/public-data/invalid-uuid", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/users/public-data/invalid-uuid", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -141,7 +141,7 @@ func TestGetProfile_Success(t *testing.T) {
 	}
 	r := common.SetupRouterWithAdmin(testUser, nil, nil, handler.RegisterRoutes)
 
-	req, _ := http.NewRequest(http.MethodGet, "/profile", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/users/profile", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -154,7 +154,7 @@ func TestGetProfile_Unauthenticated(t *testing.T) {
 	handler := handlers.NewUserHandler(mockSvc, mockRepo)
 	r := common.SetupRouterWithAdmin(nil, nil, nil, handler.RegisterRoutes)
 
-	req, _ := http.NewRequest(http.MethodGet, "/profile", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/users/profile", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -185,7 +185,7 @@ func TestUpdateProfile_Success(t *testing.T) {
 	mockSvc.On("UpdateUserProfile", testUser.ID, updateDataMap).Return(updatedUser, nil)
 
 	jsonBody, _ := json.Marshal(updateDataMap)
-	req, _ := http.NewRequest(http.MethodPut, "/profile", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest(http.MethodPut, "/users/profile", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()
@@ -214,7 +214,7 @@ func TestUpdateProfile_DuplicateUsername(t *testing.T) {
 	mockRepo.On("GetByEmailorUsername", "existinguser").Return(existingUser, nil)
 
 	jsonBody, _ := json.Marshal(updateDataMap)
-	req, _ := http.NewRequest(http.MethodPut, "/profile", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest(http.MethodPut, "/users/profile", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()

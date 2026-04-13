@@ -12,6 +12,7 @@ type Project struct {
 	ProjectCategoryID *uuid.UUID       `gorm:"type:uuid;index" json:"project_category_id,omitempty"`
 	ProjectCategory   *ProjectCategory `gorm:"foreignKey:ProjectCategoryID" json:"project_category,omitempty"`
 	UserID            uuid.UUID        `gorm:"type:uuid;not null;index" json:"user_id"`
+	User              *User            `gorm:"foreignKey:UserID;references:ID" json:"-"`
 	Type              string           `gorm:"type:varchar(50);not null" json:"type"` // e.g. 'github', 'custom'
 	Title             string           `gorm:"type:varchar(100);not null;index" json:"title"`
 	Description       *string          `gorm:"type:text" json:"description,omitempty"`

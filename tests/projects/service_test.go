@@ -17,6 +17,7 @@ func TestProjectService_CreateAndRetrieve(t *testing.T) {
 	svc := services.NewProjectService(repo)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	created, err := svc.CreateProject(&models.Project{
 		Title:     "Custom Service Project",
 		Type:      "custom",
@@ -40,6 +41,7 @@ func TestProjectService_UpdateVisibility(t *testing.T) {
 	svc := services.NewProjectService(repo)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	created, _ := svc.CreateProject(&models.Project{Title: "Hidden Project", Type: "custom", IsVisible: false, UserID: userID})
 
 	updated, err := svc.UpdateProjectVisibility(userID, created.ID, true)

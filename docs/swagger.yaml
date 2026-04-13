@@ -1,6 +1,138 @@
 basePath: /api/v1
 definitions:
-  internal_handlers.CategoryCreateReq:
+  dto.ProjectData:
+    properties:
+      additional_data:
+        additionalProperties: true
+        type: object
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      project_category_id:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  dto.PublicDataResponse:
+    properties:
+      about:
+        additionalProperties: true
+        type: object
+      availability:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      featuredSkills:
+        items:
+          $ref: '#/definitions/dto.SkillData'
+        type: array
+      heroStats:
+        additionalProperties: true
+        type: object
+      location:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      projectCategories:
+        items:
+          $ref: '#/definitions/models.ProjectCategory'
+        type: array
+      projects:
+        items:
+          $ref: '#/definitions/dto.ProjectData'
+        type: array
+      projectsSection:
+        additionalProperties: true
+        type: object
+      reviews:
+        items:
+          $ref: '#/definitions/models.Review'
+        type: array
+      skillGroups:
+        items:
+          $ref: '#/definitions/dto.SkillGroupData'
+        type: array
+      skillsSection:
+        additionalProperties: true
+        type: object
+      socialLinks:
+        items:
+          additionalProperties: true
+          type: object
+        type: array
+      surname:
+        type: string
+      timelineData:
+        items:
+          $ref: '#/definitions/dto.TimelineItem'
+        type: array
+      timelineSection:
+        additionalProperties: true
+        type: object
+      title:
+        type: string
+    type: object
+  dto.SkillData:
+    properties:
+      color:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      proficiency:
+        type: integer
+    type: object
+  dto.SkillGroupData:
+    properties:
+      name:
+        type: string
+      skills:
+        items:
+          $ref: '#/definitions/dto.SkillData'
+        type: array
+    type: object
+  dto.TimelineItem:
+    properties:
+      company:
+        type: string
+      degree:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      institution:
+        type: string
+      period:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      year:
+        type: integer
+    type: object
+  handlers.CategoryCreateReq:
     properties:
       description:
         type: string
@@ -11,7 +143,7 @@ definitions:
     required:
     - name
     type: object
-  internal_handlers.ProjectCreateReq:
+  handlers.ProjectCreateReq:
     properties:
       description:
         type: string
@@ -38,12 +170,12 @@ definitions:
     - title
     - type
     type: object
-  internal_handlers.categoryVisibilityReq:
+  handlers.categoryVisibilityReq:
     properties:
       is_visible:
         type: boolean
     type: object
-  internal_handlers.loginRequest:
+  handlers.loginRequest:
     properties:
       password:
         type: string
@@ -53,147 +185,27 @@ definitions:
     - password
     - username
     type: object
-  internal_handlers.projectVisibilityReq:
+  handlers.projectVisibilityReq:
     properties:
       is_visible:
         type: boolean
     type: object
-  internal_handlers.visibilityReq:
+  handlers.reviewVisibilityReq:
     properties:
       is_visible:
         type: boolean
     type: object
-  portfolio-website-backend_internal_dto.ProjectData:
+  handlers.skillVisibilityReq:
     properties:
-      additional_data:
-        additionalProperties: true
-        type: object
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: string
-      image:
-        type: string
-      project_category_id:
-        type: string
-      tags:
-        items:
-          type: string
-        type: array
-      title:
-        type: string
-      type:
-        type: string
-      url:
-        type: string
+      is_visible:
+        type: boolean
     type: object
-  portfolio-website-backend_internal_dto.PublicDataResponse:
+  handlers.visibilityReq:
     properties:
-      about:
-        additionalProperties: true
-        type: object
-      availability:
-        type: string
-      avatar:
-        type: string
-      email:
-        type: string
-      featuredSkills:
-        items:
-          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillData'
-        type: array
-      heroStats:
-        additionalProperties: true
-        type: object
-      location:
-        type: string
-      name:
-        type: string
-      phone:
-        type: string
-      projectCategories:
-        items:
-          $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
-        type: array
-      projects:
-        items:
-          $ref: '#/definitions/portfolio-website-backend_internal_dto.ProjectData'
-        type: array
-      projectsSection:
-        additionalProperties: true
-        type: object
-      reviews:
-        items:
-          $ref: '#/definitions/portfolio-website-backend_internal_models.Review'
-        type: array
-      skillGroups:
-        items:
-          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillGroupData'
-        type: array
-      skillsSection:
-        additionalProperties: true
-        type: object
-      socialLinks:
-        additionalProperties: true
-        type: object
-      surname:
-        type: string
-      timelineData:
-        items:
-          $ref: '#/definitions/portfolio-website-backend_internal_dto.TimelineItem'
-        type: array
-      timelineSection:
-        additionalProperties: true
-        type: object
-      title:
-        type: string
+      is_visible:
+        type: boolean
     type: object
-  portfolio-website-backend_internal_dto.SkillData:
-    properties:
-      color:
-        type: string
-      icon:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      proficiency:
-        type: integer
-    type: object
-  portfolio-website-backend_internal_dto.SkillGroupData:
-    properties:
-      name:
-        type: string
-      skills:
-        items:
-          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillData'
-        type: array
-    type: object
-  portfolio-website-backend_internal_dto.TimelineItem:
-    properties:
-      company:
-        type: string
-      degree:
-        type: string
-      description:
-        type: string
-      id:
-        type: string
-      institution:
-        type: string
-      period:
-        type: string
-      title:
-        type: string
-      type:
-        type: string
-      year:
-        type: integer
-    type: object
-  portfolio-website-backend_internal_models.Experience:
+  models.Experience:
     properties:
       created_at:
         type: string
@@ -219,14 +231,14 @@ definitions:
       user_id:
         type: string
     type: object
-  portfolio-website-backend_internal_models.JSONMap:
+  models.JSONMap:
     additionalProperties: true
     type: object
-  portfolio-website-backend_internal_models.Project:
+  models.Project:
     properties:
       additional_data:
         allOf:
-        - $ref: '#/definitions/portfolio-website-backend_internal_models.JSONMap'
+        - $ref: '#/definitions/models.JSONMap'
         description: Store complete GitHub API response
       created_at:
         type: string
@@ -243,7 +255,7 @@ definitions:
       is_visible:
         type: boolean
       project_category:
-        $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+        $ref: '#/definitions/models.ProjectCategory'
       project_category_id:
         type: string
       published_at:
@@ -264,7 +276,7 @@ definitions:
       user_id:
         type: string
     type: object
-  portfolio-website-backend_internal_models.ProjectCategory:
+  models.ProjectCategory:
     properties:
       created_at:
         type: string
@@ -281,7 +293,7 @@ definitions:
       user_id:
         type: string
     type: object
-  portfolio-website-backend_internal_models.Review:
+  models.Review:
     properties:
       avatar:
         type: string
@@ -303,11 +315,55 @@ definitions:
         type: integer
       updated_at:
         type: string
+      user_id:
+        type: string
     type: object
-  portfolio-website-backend_internal_models.User:
+  models.Skill:
+    properties:
+      color:
+        type: string
+      created_at:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      is_visible:
+        type: boolean
+      name:
+        type: string
+      proficiency:
+        type: integer
+      skill_group_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.SkillGroup:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      is_visible:
+        type: boolean
+      name:
+        type: string
+      skills:
+        items:
+          $ref: '#/definitions/models.Skill'
+        type: array
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.User:
     properties:
       about:
-        $ref: '#/definitions/portfolio-website-backend_internal_models.JSONMap'
+        $ref: '#/definitions/models.JSONMap'
       availability:
         type: string
       avatar:
@@ -330,7 +386,10 @@ definitions:
       phone:
         type: string
       social_links:
-        $ref: '#/definitions/portfolio-website-backend_internal_models.JSONMap'
+        items:
+          additionalProperties: true
+          type: object
+        type: array
       surname:
         type: string
       title:
@@ -341,7 +400,7 @@ definitions:
         description: Required fields
         type: string
     type: object
-host: localhost:8000
+host: 10.5.0.2:8000
 info:
   contact: {}
   description: This is the backend API for my portfolio website.
@@ -399,14 +458,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
+          $ref: '#/definitions/models.Experience'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
+            $ref: '#/definitions/models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -469,7 +528,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
+            $ref: '#/definitions/models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -508,7 +567,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
+            $ref: '#/definitions/models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -540,14 +599,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_handlers.visibilityReq'
+          $ref: '#/definitions/handlers.visibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
+            $ref: '#/definitions/models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -607,105 +666,6 @@ paths:
       summary: Get public experiences
       tags:
       - experiences
-  /login:
-    post:
-      consumes:
-      - application/json
-      description: Login and get an access token
-      parameters:
-      - description: Login Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/internal_handlers.loginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: User login
-      tags:
-      - users
-  /profile:
-    get:
-      consumes:
-      - application/json
-      description: Get the profile of the currently logged in user
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.User'
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Get current user profile
-      tags:
-      - users
-    put:
-      consumes:
-      - application/json
-      description: Update the profile of the currently logged in user
-      parameters:
-      - description: Update Data
-        in: body
-        name: request
-        required: true
-        schema:
-          additionalProperties: true
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.User'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Update user profile
-      tags:
-      - users
   /project-categories:
     get:
       consumes:
@@ -727,7 +687,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+              $ref: '#/definitions/models.ProjectCategory'
             type: array
         "400":
           description: Bad Request
@@ -754,14 +714,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_handlers.CategoryCreateReq'
+          $ref: '#/definitions/handlers.CategoryCreateReq'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+            $ref: '#/definitions/models.ProjectCategory'
         "400":
           description: Bad Request
           schema:
@@ -824,7 +784,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+            $ref: '#/definitions/models.ProjectCategory'
         "400":
           description: Bad Request
           schema:
@@ -863,7 +823,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+            $ref: '#/definitions/models.ProjectCategory'
         "400":
           description: Bad Request
           schema:
@@ -895,14 +855,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_handlers.categoryVisibilityReq'
+          $ref: '#/definitions/handlers.categoryVisibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+            $ref: '#/definitions/models.ProjectCategory'
         "400":
           description: Bad Request
           schema:
@@ -944,7 +904,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+              $ref: '#/definitions/models.ProjectCategory'
             type: array
         "400":
           description: Bad Request
@@ -1006,14 +966,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_handlers.ProjectCreateReq'
+          $ref: '#/definitions/handlers.ProjectCreateReq'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
+            $ref: '#/definitions/models.Project'
         "400":
           description: Bad Request
           schema:
@@ -1076,7 +1036,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
+            $ref: '#/definitions/models.Project'
         "400":
           description: Bad Request
           schema:
@@ -1115,7 +1075,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
+            $ref: '#/definitions/models.Project'
         "400":
           description: Bad Request
           schema:
@@ -1147,14 +1107,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_handlers.projectVisibilityReq'
+          $ref: '#/definitions/handlers.projectVisibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
+            $ref: '#/definitions/models.Project'
         "400":
           description: Bad Request
           schema:
@@ -1210,7 +1170,819 @@ paths:
       summary: Get public projects
       tags:
       - projects
-  /public-data/{user_id}:
+  /reviews:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of reviews (requires auth)
+      parameters:
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get reviews
+      tags:
+      - reviews
+    post:
+      consumes:
+      - application/json
+      description: Create a new review
+      parameters:
+      - description: Review Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Review'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Review'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create review
+      tags:
+      - reviews
+  /reviews/{review_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a review
+      parameters:
+      - description: Review ID
+        in: path
+        name: review_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete review
+      tags:
+      - reviews
+    get:
+      consumes:
+      - application/json
+      description: Get a single review by its ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: review_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get review by ID
+      tags:
+      - reviews
+    put:
+      consumes:
+      - application/json
+      description: Update an existing review
+      parameters:
+      - description: Review ID
+        in: path
+        name: review_id
+        required: true
+        type: string
+      - description: Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update review
+      tags:
+      - reviews
+  /reviews/{review_id}/visibility:
+    patch:
+      consumes:
+      - application/json
+      description: Change the visibility of a review
+      parameters:
+      - description: Review ID
+        in: path
+        name: review_id
+        required: true
+        type: string
+      - description: Visibility Update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.reviewVisibilityReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update review visibility
+      tags:
+      - reviews
+  /reviews/public/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of public reviews
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get public reviews
+      tags:
+      - reviews
+  /skills:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of skills
+      parameters:
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get skills
+      tags:
+      - skills
+    post:
+      consumes:
+      - application/json
+      description: Create a new skill in a skill group
+      parameters:
+      - description: Skill Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Skill'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Skill'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create skill
+      tags:
+      - skills
+  /skills/{skill_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a skill
+      parameters:
+      - description: Skill ID
+        in: path
+        name: skill_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete skill
+      tags:
+      - skills
+    get:
+      consumes:
+      - application/json
+      description: Get a single skill by its ID
+      parameters:
+      - description: Skill ID
+        in: path
+        name: skill_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Skill'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get skill by ID
+      tags:
+      - skills
+    put:
+      consumes:
+      - application/json
+      description: Update an existing skill
+      parameters:
+      - description: Skill ID
+        in: path
+        name: skill_id
+        required: true
+        type: string
+      - description: Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Skill'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update skill
+      tags:
+      - skills
+  /skills/{skill_id}/visibility:
+    patch:
+      consumes:
+      - application/json
+      description: Change the visibility of a skill
+      parameters:
+      - description: Skill ID
+        in: path
+        name: skill_id
+        required: true
+        type: string
+      - description: Visibility Update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.skillVisibilityReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Skill'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update skill visibility
+      tags:
+      - skills
+  /skills/groups:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of skill groups (requires auth)
+      parameters:
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get skill groups
+      tags:
+      - skills
+    post:
+      consumes:
+      - application/json
+      description: Create a new skill group
+      parameters:
+      - description: Skill Group Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.SkillGroup'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SkillGroup'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create skill group
+      tags:
+      - skills
+  /skills/groups/{group_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a skill group
+      parameters:
+      - description: Group ID
+        in: path
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete skill group
+      tags:
+      - skills
+    get:
+      consumes:
+      - application/json
+      description: Get a single skill group by its ID
+      parameters:
+      - description: Group ID
+        in: path
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SkillGroup'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get skill group by ID
+      tags:
+      - skills
+    put:
+      consumes:
+      - application/json
+      description: Update an existing skill group
+      parameters:
+      - description: Group ID
+        in: path
+        name: group_id
+        required: true
+        type: string
+      - description: Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SkillGroup'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update skill group
+      tags:
+      - skills
+  /skills/groups/{group_id}/visibility:
+    patch:
+      consumes:
+      - application/json
+      description: Change the visibility of a skill group
+      parameters:
+      - description: Group ID
+        in: path
+        name: group_id
+        required: true
+        type: string
+      - description: Visibility Update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.skillVisibilityReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SkillGroup'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update skill group visibility
+      tags:
+      - skills
+  /skills/public/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of public skill groups
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Skip count
+        in: query
+        name: skip
+        type: integer
+      - description: Limit count
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get public skill groups
+      tags:
+      - skills
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login and get an access token
+      parameters:
+      - description: Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - users
+  /users/profile:
+    get:
+      consumes:
+      - application/json
+      description: Get the profile of the currently logged in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get current user profile
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update the profile of the currently logged in user
+      parameters:
+      - description: Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update user profile
+      tags:
+      - users
+  /users/public-data/{user_id}:
     get:
       consumes:
       - application/json
@@ -1227,7 +1999,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/portfolio-website-backend_internal_dto.PublicDataResponse'
+            $ref: '#/definitions/dto.PublicDataResponse'
         "400":
           description: Bad Request
           schema:

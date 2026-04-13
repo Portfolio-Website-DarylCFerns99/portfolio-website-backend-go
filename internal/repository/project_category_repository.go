@@ -11,8 +11,8 @@ import (
 
 type ProjectCategoryRepository interface {
 	Create(category *models.ProjectCategory) (*models.ProjectCategory, error)
-	GetAll(userID uuid.UUID, skip, limit int) ([]models.ProjectCategory, error)
-	GetVisible(userID uuid.UUID, skip, limit int) ([]models.ProjectCategory, error)
+	GetAll(userID uuid.UUID, skip, limit int) ([]models.ProjectCategory, int64, error)
+	GetVisible(userID uuid.UUID, skip, limit int) ([]models.ProjectCategory, int64, error)
 	GetByID(userID uuid.UUID, id uuid.UUID) (*models.ProjectCategory, error)
 	GetVisibleByID(userID uuid.UUID, id uuid.UUID) (*models.ProjectCategory, error)
 	Update(userID uuid.UUID, id uuid.UUID, data map[string]interface{}) (*models.ProjectCategory, error)
@@ -34,20 +34,34 @@ func (r *projectCategoryRepository) Create(category *models.ProjectCategory) (*m
 	return category, nil
 }
 
-func (r *projectCategoryRepository) GetAll(userID uuid.UUID, skip, limit int) ([]models.ProjectCategory, error) {
+func (r *projectCategoryRepository) GetAll(userID uuid.UUID, skip, limit int) ([]models.ProjectCategory, int64, error) {
 	var categories []models.ProjectCategory
-	if err := r.db.Where("user_id = ?", userID).Offset(skip).Limit(limit).Find(&categories).Error; err != nil {
-		return nil, err
+	var total int64
+
+	query := r.db.Model(&models.ProjectCategory{}).Where("user_id = ?", userID)
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
-	return categories, nil
+
+	if err := query.Offset(skip).Limit(limit).Find(&categories).Error; err != nil {
+		return nil, 0, err
+	}
+	return categories, total, nil
 }
 
-func (r *projectCategoryRepository) GetVisible(userID uuid.UUID, skip, limit int) ([]models.ProjectCategory, error) {
+func (r *projectCategoryRepository) GetVisible(userID uuid.UUID, skip, limit int) ([]models.ProjectCategory, int64, error) {
 	var categories []models.ProjectCategory
-	if err := r.db.Where("user_id = ? AND is_visible = ?", userID, true).Offset(skip).Limit(limit).Find(&categories).Error; err != nil {
-		return nil, err
+	var total int64
+
+	query := r.db.Model(&models.ProjectCategory{}).Where("user_id = ? AND is_visible = ?", userID, true)
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
-	return categories, nil
+
+	if err := query.Offset(skip).Limit(limit).Find(&categories).Error; err != nil {
+		return nil, 0, err
+	}
+	return categories, total, nil
 }
 
 func (r *projectCategoryRepository) GetByID(userID uuid.UUID, id uuid.UUID) (*models.ProjectCategory, error) {

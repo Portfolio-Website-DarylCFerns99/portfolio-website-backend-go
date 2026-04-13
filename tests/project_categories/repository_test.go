@@ -15,6 +15,7 @@ func TestProjectCategoryRepo_CreateAndGet(t *testing.T) {
 	repo := repository.NewProjectCategoryRepository(db)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	cat := &models.ProjectCategory{
 		Name:      "Open Source",
 		IsVisible: true,
@@ -36,19 +37,22 @@ func TestProjectCategoryRepo_GetVisible(t *testing.T) {
 	repo := repository.NewProjectCategoryRepository(db)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	repo.Create(&models.ProjectCategory{Name: "Visible Category", IsVisible: true, UserID: userID})
 	repo.Create(&models.ProjectCategory{Name: "Hidden Category", IsVisible: false, UserID: userID})
 
-	// Fetch only visible
-	visibleCats, err := repo.GetVisible(userID, 0, 10)
+	// Test GetVisible
+	visibleCategories, totalVisible, err := repo.GetVisible(userID, 0, 100)
 	assert.NoError(t, err)
-	assert.Len(t, visibleCats, 1)
-	assert.Equal(t, "Visible Category", visibleCats[0].Name)
+	assert.Len(t, visibleCategories, 1)
+	assert.Equal(t, int64(1), totalVisible)
+	assert.Equal(t, "Visible Category", visibleCategories[0].Name)
 
-	// Fetch ALL
-	allCats, err := repo.GetAll(userID, 0, 10)
+	// Test GetAll
+	allCategories, totalAll, err := repo.GetAll(userID, 0, 100)
 	assert.NoError(t, err)
-	assert.Len(t, allCats, 2)
+	assert.Len(t, allCategories, 2)
+	assert.Equal(t, int64(2), totalAll)
 }
 
 func TestProjectCategoryRepo_UpdateAndDelete(t *testing.T) {
@@ -56,6 +60,7 @@ func TestProjectCategoryRepo_UpdateAndDelete(t *testing.T) {
 	repo := repository.NewProjectCategoryRepository(db)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
 	created, _ := repo.Create(&models.ProjectCategory{Name: "Old Name", IsVisible: true, UserID: userID})
 
 	// Update

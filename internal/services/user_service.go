@@ -70,7 +70,7 @@ func (s *userService) UpdateUserProfile(id uuid.UUID, updateData map[string]inte
 		// Type assertion for the slice
 		if skillIDs, isSlice := featured.([]string); isSlice {
 			validIDs := s.ValidateFeaturedSkills(id, skillIDs)
-			updateData["featured_skill_ids"] = validIDs
+			updateData["featured_skill_ids"] = models.JSONStringArray(validIDs)
 		} else if skillInterfaceSlice, isInterfaceSlice := featured.([]interface{}); isInterfaceSlice {
 			var skillIDs []string
 			for _, v := range skillInterfaceSlice {
@@ -79,7 +79,29 @@ func (s *userService) UpdateUserProfile(id uuid.UUID, updateData map[string]inte
 				}
 			}
 			validIDs := s.ValidateFeaturedSkills(id, skillIDs)
-			updateData["featured_skill_ids"] = validIDs
+			updateData["featured_skill_ids"] = models.JSONStringArray(validIDs)
+		}
+	}
+
+	// Convert social_links to JSONMapArray so GORM serializes it correctly instead of storing it as a generic object or raw bytes
+	if sl, ok := updateData["social_links"]; ok {
+		// Attempt to read it as a slice of maps
+		if slSlice, isSlice := sl.([]interface{}); isSlice {
+			var jsonMapArray models.JSONMapArray
+			for _, item := range slSlice {
+				if m, isMap := item.(map[string]interface{}); isMap {
+					jsonMapArray = append(jsonMapArray, m)
+				}
+			}
+			updateData["social_links"] = jsonMapArray
+		} else if slMap, isMap := sl.(map[string]interface{}); isMap {
+			// If frontend accidentally sends a single object, wrap it
+			updateData["social_links"] = models.JSONMapArray{slMap}
+		} else if slBytes, isBytes := sl.([]byte); isBytes {
+			var parsed models.JSONMapArray
+			if err := parsed.Scan(slBytes); err == nil {
+				updateData["social_links"] = parsed
+			}
 		}
 	}
 
@@ -97,10 +119,10 @@ func calculateTotalExperience(experiences []models.Experience) interface{} {
 		}
 		end := now
 		if exp.EndDate != nil {
-			end = *exp.EndDate
+			end = exp.EndDate.Time
 		}
 
-		days := end.Sub(exp.StartDate).Hours() / 24.0
+		days := end.Sub(exp.StartDate.Time).Hours() / 24.0
 		years := days / 365.25
 		totalYears += years
 	}
@@ -141,12 +163,12 @@ func (s *userService) GetPublicPortfolioData(userID uuid.UUID) (*dto.PublicDataR
 		item := dto.TimelineItem{
 			ID:          exp.ID.String(),
 			Type:        exp.Type,
-			Period:      exp.StartDate.Format("Jan 2006") + " - ",
-			Year:        exp.StartDate.Year(),
+			Period:      exp.StartDate.Time.Format("Jan 2006") + " - ",
+			Year:        exp.StartDate.Time.Year(),
 			Description: exp.Description,
 		}
 		if exp.EndDate != nil {
-			item.Period += exp.EndDate.Format("Jan 2006")
+			item.Period += exp.EndDate.Time.Format("Jan 2006")
 		} else {
 			item.Period += "Present"
 		}
@@ -266,7 +288,7 @@ func (s *userService) GetPublicPortfolioData(userID uuid.UUID) (*dto.PublicDataR
 		HeroStats: map[string]interface{}{
 			"experience": totalExp,
 		},
-		SocialLinks:    user.SocialLinks,
+		SocialLinks:    []map[string]interface{}(user.SocialLinks),
 		FeaturedSkills: featuredSkills,
 		About: map[string]interface{}{
 			"title":            "More about",

@@ -5,6 +5,7 @@ import (
 	"portfolio-website-backend/internal/repository"
 	"portfolio-website-backend/tests/common"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -15,12 +16,15 @@ func TestExperienceRepo_CreateAndGet(t *testing.T) {
 	repo := repository.NewExperienceRepository(db)
 
 	userID := uuid.New()
+	common.CreateTestUser(db, userID)
+
 	exp := &models.Experience{
 		Title:        "Software Engineer",
 		Organization: "Tech Corp",
 		Type:         "experience",
 		IsVisible:    true,
 		UserID:       userID,
+		StartDate:    models.DateOnly{Time: time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)},
 	}
 
 	created, err := repo.Create(exp)
@@ -38,9 +42,12 @@ func TestExperienceRepo_GetByTypeAndVisibility(t *testing.T) {
 	repo := repository.NewExperienceRepository(db)
 
 	userID := uuid.New()
-	repo.Create(&models.Experience{Type: "education", IsVisible: true, Title: "BS Computer Science", UserID: userID})
-	repo.Create(&models.Experience{Type: "education", IsVisible: false, Title: "High School", UserID: userID})
-	repo.Create(&models.Experience{Type: "certification", IsVisible: true, Title: "AWS Cert", UserID: userID})
+	common.CreateTestUser(db, userID)
+
+	start := models.DateOnly{Time: time.Date(2020, 9, 1, 0, 0, 0, 0, time.UTC)}
+	repo.Create(&models.Experience{Type: "education", IsVisible: true, Title: "BS Computer Science", UserID: userID, StartDate: start})
+	repo.Create(&models.Experience{Type: "education", IsVisible: false, Title: "High School", UserID: userID, StartDate: start})
+	repo.Create(&models.Experience{Type: "certification", IsVisible: true, Title: "AWS Cert", UserID: userID, StartDate: start})
 
 	// Fetch only visible education
 	visibleEdu, err := repo.GetByType(userID, "education", 0, 10, true)
@@ -60,7 +67,9 @@ func TestExperienceRepo_UpdateAndDelete(t *testing.T) {
 	repo := repository.NewExperienceRepository(db)
 
 	userID := uuid.New()
-	created, _ := repo.Create(&models.Experience{Title: "Temporary Role", IsVisible: true, UserID: userID})
+	common.CreateTestUser(db, userID)
+
+	created, _ := repo.Create(&models.Experience{Title: "Temporary Role", IsVisible: true, UserID: userID, StartDate: models.DateOnly{Time: time.Date(2023, 6, 1, 0, 0, 0, 0, time.UTC)}})
 
 	// Update
 	updated, err := repo.Update(userID, created.ID, map[string]interface{}{"title": "Permanent Role"})
