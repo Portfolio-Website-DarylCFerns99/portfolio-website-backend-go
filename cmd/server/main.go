@@ -18,13 +18,13 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	// Generated docs
-	_ "portfolio-website-backend/docs"
+	"portfolio-website-backend/docs"
 )
 
 // @title           Portfolio Website API
 // @version         1.0
 // @description     This is the backend API for my portfolio website.
-// @host            10.5.0.2:8000
+// @host            localhost:8000
 // @BasePath        /api/v1
 // @securityDefinitions.apikey BearerAuth
 // @in header
@@ -56,6 +56,7 @@ func main() {
 	skillService := services.NewSkillService(skillRepo)
 	chatService := services.NewChatService(db)
 	vectorService := services.NewVectorService(db)
+	contactService := services.NewContactService(userRepo)
 	chatRepo := repository.NewChatRepository(db)
 
 	// Initialize Gin router
@@ -82,6 +83,7 @@ func main() {
 	reviewHandler := handlers.NewReviewHandler(reviewService)
 	skillHandler := handlers.NewSkillHandler(skillService)
 	chatHandler := handlers.NewChatHandler(chatService, vectorService, chatRepo)
+	contactHandler := handlers.NewContactHandler(contactService)
 
 	// Register Routes
 	userHandler.RegisterRoutes(apiGroup, authMiddleware, adminAuthMiddleware)
@@ -91,6 +93,7 @@ func main() {
 	reviewHandler.RegisterRoutes(apiGroup, authMiddleware)
 	skillHandler.RegisterRoutes(apiGroup, authMiddleware)
 	chatHandler.RegisterRoutes(apiGroup, authMiddleware)
+	contactHandler.RegisterRoutes(apiGroup)
 
 	// Swagger API Docs
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -111,6 +114,7 @@ func main() {
 	})
 
 	addr := config.Envs.IPAddr + ":" + config.Envs.Port
+	docs.SwaggerInfo.Host = addr
 	log.Printf("Server is starting on %s...", addr)
 
 	// Start server

@@ -98,6 +98,22 @@ definitions:
       user_id:
         type: string
     type: object
+  portfolio-website-backend_internal_dto.ContactRequest:
+    properties:
+      email:
+        type: string
+      message:
+        type: string
+      name:
+        type: string
+      subject:
+        type: string
+    required:
+    - email
+    - message
+    - name
+    - subject
+    type: object
   portfolio-website-backend_internal_dto.ProjectData:
     properties:
       additional_data:
@@ -430,7 +446,7 @@ definitions:
         description: Required fields
         type: string
     type: object
-host: 10.5.0.2:8000
+host: localhost:8000
 info:
   contact: {}
   description: This is the backend API for my portfolio website.
@@ -583,6 +599,51 @@ paths:
       summary: WebSocket Chat Endpoint
       tags:
       - Chatbot
+  /contact/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: Send a contact form email to the portfolio owner identified by
+        user_id.
+      parameters:
+      - description: Portfolio owner user ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Contact form data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.ContactRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Send contact email
+      tags:
+      - contact
   /experiences:
     get:
       consumes:
