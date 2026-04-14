@@ -1,138 +1,6 @@
 basePath: /api/v1
 definitions:
-  dto.ProjectData:
-    properties:
-      additional_data:
-        additionalProperties: true
-        type: object
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: string
-      image:
-        type: string
-      project_category_id:
-        type: string
-      tags:
-        items:
-          type: string
-        type: array
-      title:
-        type: string
-      type:
-        type: string
-      url:
-        type: string
-    type: object
-  dto.PublicDataResponse:
-    properties:
-      about:
-        additionalProperties: true
-        type: object
-      availability:
-        type: string
-      avatar:
-        type: string
-      email:
-        type: string
-      featuredSkills:
-        items:
-          $ref: '#/definitions/dto.SkillData'
-        type: array
-      heroStats:
-        additionalProperties: true
-        type: object
-      location:
-        type: string
-      name:
-        type: string
-      phone:
-        type: string
-      projectCategories:
-        items:
-          $ref: '#/definitions/models.ProjectCategory'
-        type: array
-      projects:
-        items:
-          $ref: '#/definitions/dto.ProjectData'
-        type: array
-      projectsSection:
-        additionalProperties: true
-        type: object
-      reviews:
-        items:
-          $ref: '#/definitions/models.Review'
-        type: array
-      skillGroups:
-        items:
-          $ref: '#/definitions/dto.SkillGroupData'
-        type: array
-      skillsSection:
-        additionalProperties: true
-        type: object
-      socialLinks:
-        items:
-          additionalProperties: true
-          type: object
-        type: array
-      surname:
-        type: string
-      timelineData:
-        items:
-          $ref: '#/definitions/dto.TimelineItem'
-        type: array
-      timelineSection:
-        additionalProperties: true
-        type: object
-      title:
-        type: string
-    type: object
-  dto.SkillData:
-    properties:
-      color:
-        type: string
-      icon:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      proficiency:
-        type: integer
-    type: object
-  dto.SkillGroupData:
-    properties:
-      name:
-        type: string
-      skills:
-        items:
-          $ref: '#/definitions/dto.SkillData'
-        type: array
-    type: object
-  dto.TimelineItem:
-    properties:
-      company:
-        type: string
-      degree:
-        type: string
-      description:
-        type: string
-      id:
-        type: string
-      institution:
-        type: string
-      period:
-        type: string
-      title:
-        type: string
-      type:
-        type: string
-      year:
-        type: integer
-    type: object
-  handlers.CategoryCreateReq:
+  internal_handlers.CategoryCreateReq:
     properties:
       description:
         type: string
@@ -143,7 +11,7 @@ definitions:
     required:
     - name
     type: object
-  handlers.ProjectCreateReq:
+  internal_handlers.ProjectCreateReq:
     properties:
       description:
         type: string
@@ -170,12 +38,12 @@ definitions:
     - title
     - type
     type: object
-  handlers.categoryVisibilityReq:
+  internal_handlers.categoryVisibilityReq:
     properties:
       is_visible:
         type: boolean
     type: object
-  handlers.loginRequest:
+  internal_handlers.loginRequest:
     properties:
       password:
         type: string
@@ -185,34 +53,196 @@ definitions:
     - password
     - username
     type: object
-  handlers.projectVisibilityReq:
+  internal_handlers.projectVisibilityReq:
     properties:
       is_visible:
         type: boolean
     type: object
-  handlers.reviewVisibilityReq:
+  internal_handlers.reviewVisibilityReq:
     properties:
       is_visible:
         type: boolean
     type: object
-  handlers.skillVisibilityReq:
+  internal_handlers.skillVisibilityReq:
     properties:
       is_visible:
         type: boolean
     type: object
-  handlers.visibilityReq:
+  internal_handlers.visibilityReq:
     properties:
       is_visible:
         type: boolean
     type: object
-  models.Experience:
+  portfolio-website-backend_internal_dto.ChatMessageResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      sender:
+        description: mapped from 'role'
+        type: string
+    type: object
+  portfolio-website-backend_internal_dto.ChatSessionResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      last_active:
+        type: string
+      message_count:
+        type: integer
+      user_id:
+        type: string
+    type: object
+  portfolio-website-backend_internal_dto.ProjectData:
+    properties:
+      additional_data:
+        additionalProperties: true
+        type: object
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      project_category_id:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  portfolio-website-backend_internal_dto.PublicDataResponse:
+    properties:
+      about:
+        additionalProperties: true
+        type: object
+      availability:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      featuredSkills:
+        items:
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillData'
+        type: array
+      heroStats:
+        additionalProperties: true
+        type: object
+      location:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      projectCategories:
+        items:
+          $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
+        type: array
+      projects:
+        items:
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.ProjectData'
+        type: array
+      projectsSection:
+        additionalProperties: true
+        type: object
+      reviews:
+        items:
+          $ref: '#/definitions/portfolio-website-backend_internal_models.Review'
+        type: array
+      skillGroups:
+        items:
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillGroupData'
+        type: array
+      skillsSection:
+        additionalProperties: true
+        type: object
+      socialLinks:
+        items:
+          additionalProperties: true
+          type: object
+        type: array
+      surname:
+        type: string
+      timelineData:
+        items:
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.TimelineItem'
+        type: array
+      timelineSection:
+        additionalProperties: true
+        type: object
+      title:
+        type: string
+    type: object
+  portfolio-website-backend_internal_dto.SkillData:
+    properties:
+      color:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      proficiency:
+        type: integer
+    type: object
+  portfolio-website-backend_internal_dto.SkillGroupData:
+    properties:
+      name:
+        type: string
+      skills:
+        items:
+          $ref: '#/definitions/portfolio-website-backend_internal_dto.SkillData'
+        type: array
+    type: object
+  portfolio-website-backend_internal_dto.TimelineItem:
+    properties:
+      company:
+        type: string
+      degree:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      institution:
+        type: string
+      period:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      year:
+        type: integer
+    type: object
+  portfolio-website-backend_internal_models.DateOnly:
+    properties:
+      time.Time:
+        type: string
+    type: object
+  portfolio-website-backend_internal_models.Experience:
     properties:
       created_at:
         type: string
       description:
         type: string
       end_date:
-        type: string
+        $ref: '#/definitions/portfolio-website-backend_internal_models.DateOnly'
       id:
         type: string
       is_visible:
@@ -220,7 +250,7 @@ definitions:
       organization:
         type: string
       start_date:
-        type: string
+        $ref: '#/definitions/portfolio-website-backend_internal_models.DateOnly'
       title:
         type: string
       type:
@@ -231,14 +261,14 @@ definitions:
       user_id:
         type: string
     type: object
-  models.JSONMap:
+  portfolio-website-backend_internal_models.JSONMap:
     additionalProperties: true
     type: object
-  models.Project:
+  portfolio-website-backend_internal_models.Project:
     properties:
       additional_data:
         allOf:
-        - $ref: '#/definitions/models.JSONMap'
+        - $ref: '#/definitions/portfolio-website-backend_internal_models.JSONMap'
         description: Store complete GitHub API response
       created_at:
         type: string
@@ -255,7 +285,7 @@ definitions:
       is_visible:
         type: boolean
       project_category:
-        $ref: '#/definitions/models.ProjectCategory'
+        $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
       project_category_id:
         type: string
       published_at:
@@ -276,7 +306,7 @@ definitions:
       user_id:
         type: string
     type: object
-  models.ProjectCategory:
+  portfolio-website-backend_internal_models.ProjectCategory:
     properties:
       created_at:
         type: string
@@ -293,7 +323,7 @@ definitions:
       user_id:
         type: string
     type: object
-  models.Review:
+  portfolio-website-backend_internal_models.Review:
     properties:
       avatar:
         type: string
@@ -318,7 +348,7 @@ definitions:
       user_id:
         type: string
     type: object
-  models.Skill:
+  portfolio-website-backend_internal_models.Skill:
     properties:
       color:
         type: string
@@ -341,7 +371,7 @@ definitions:
       user_id:
         type: string
     type: object
-  models.SkillGroup:
+  portfolio-website-backend_internal_models.SkillGroup:
     properties:
       created_at:
         type: string
@@ -353,17 +383,17 @@ definitions:
         type: string
       skills:
         items:
-          $ref: '#/definitions/models.Skill'
+          $ref: '#/definitions/portfolio-website-backend_internal_models.Skill'
         type: array
       updated_at:
         type: string
       user_id:
         type: string
     type: object
-  models.User:
+  portfolio-website-backend_internal_models.User:
     properties:
       about:
-        $ref: '#/definitions/models.JSONMap'
+        $ref: '#/definitions/portfolio-website-backend_internal_models.JSONMap'
       availability:
         type: string
       avatar:
@@ -407,6 +437,152 @@ info:
   title: Portfolio Website API
   version: "1.0"
 paths:
+  /chatbot/sessions:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve active chat sessions for the authenticated user
+      parameters:
+      - default: 50
+        description: Limit number of sessions
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/portfolio-website-backend_internal_dto.ChatSessionResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Chat Sessions
+      tags:
+      - Chatbot
+  /chatbot/sessions/{session_id}/messages:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the message history for a specific chat session
+      parameters:
+      - description: Session UUID
+        format: uuid
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/portfolio-website-backend_internal_dto.ChatMessageResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Session Messages
+      tags:
+      - Chatbot
+  /chatbot/sync:
+    post:
+      consumes:
+      - application/json
+      description: Triggers a manual refresh of the Vector Store for the authenticated
+        user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Sync Vector Context
+      tags:
+      - Chatbot
+  /chatbot/ws/chat:
+    get:
+      description: Initiates a WebSocket connection for real-time portfolio chat.
+        Requires session_id and user_id.
+      parameters:
+      - description: Client Chat Session UUID
+        format: uuid
+        in: query
+        name: session_id
+        required: true
+        type: string
+      - description: Portfolio Owner UUID
+        format: uuid
+        in: query
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "101":
+          description: Switching Protocols to WebSockets
+      summary: WebSocket Chat Endpoint
+      tags:
+      - Chatbot
   /experiences:
     get:
       consumes:
@@ -458,14 +634,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.Experience'
+          $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Experience'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -528,7 +704,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Experience'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -567,7 +743,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Experience'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -599,14 +775,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.visibilityReq'
+          $ref: '#/definitions/internal_handlers.visibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Experience'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Experience'
         "400":
           description: Bad Request
           schema:
@@ -687,7 +863,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.ProjectCategory'
+              $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
             type: array
         "400":
           description: Bad Request
@@ -714,14 +890,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.CategoryCreateReq'
+          $ref: '#/definitions/internal_handlers.CategoryCreateReq'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.ProjectCategory'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
         "400":
           description: Bad Request
           schema:
@@ -784,7 +960,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ProjectCategory'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
         "400":
           description: Bad Request
           schema:
@@ -823,7 +999,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ProjectCategory'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
         "400":
           description: Bad Request
           schema:
@@ -855,14 +1031,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.categoryVisibilityReq'
+          $ref: '#/definitions/internal_handlers.categoryVisibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ProjectCategory'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
         "400":
           description: Bad Request
           schema:
@@ -904,7 +1080,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.ProjectCategory'
+              $ref: '#/definitions/portfolio-website-backend_internal_models.ProjectCategory'
             type: array
         "400":
           description: Bad Request
@@ -966,14 +1142,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.ProjectCreateReq'
+          $ref: '#/definitions/internal_handlers.ProjectCreateReq'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Project'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
         "400":
           description: Bad Request
           schema:
@@ -1036,7 +1212,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Project'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
         "400":
           description: Bad Request
           schema:
@@ -1075,7 +1251,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Project'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
         "400":
           description: Bad Request
           schema:
@@ -1107,14 +1283,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.projectVisibilityReq'
+          $ref: '#/definitions/internal_handlers.projectVisibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Project'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Project'
         "400":
           description: Bad Request
           schema:
@@ -1217,14 +1393,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.Review'
+          $ref: '#/definitions/portfolio-website-backend_internal_models.Review'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Review'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Review'
         "400":
           description: Bad Request
           schema:
@@ -1287,7 +1463,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Review'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Review'
         "400":
           description: Bad Request
           schema:
@@ -1326,7 +1502,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Review'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Review'
         "400":
           description: Bad Request
           schema:
@@ -1358,14 +1534,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.reviewVisibilityReq'
+          $ref: '#/definitions/internal_handlers.reviewVisibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Review'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Review'
         "400":
           description: Bad Request
           schema:
@@ -1468,14 +1644,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.Skill'
+          $ref: '#/definitions/portfolio-website-backend_internal_models.Skill'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Skill'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Skill'
         "400":
           description: Bad Request
           schema:
@@ -1538,7 +1714,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Skill'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Skill'
         "400":
           description: Bad Request
           schema:
@@ -1577,7 +1753,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Skill'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Skill'
         "400":
           description: Bad Request
           schema:
@@ -1609,14 +1785,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.skillVisibilityReq'
+          $ref: '#/definitions/internal_handlers.skillVisibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Skill'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.Skill'
         "400":
           description: Bad Request
           schema:
@@ -1679,14 +1855,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.SkillGroup'
+          $ref: '#/definitions/portfolio-website-backend_internal_models.SkillGroup'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.SkillGroup'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.SkillGroup'
         "400":
           description: Bad Request
           schema:
@@ -1749,7 +1925,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.SkillGroup'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.SkillGroup'
         "400":
           description: Bad Request
           schema:
@@ -1788,7 +1964,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.SkillGroup'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.SkillGroup'
         "400":
           description: Bad Request
           schema:
@@ -1820,14 +1996,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.skillVisibilityReq'
+          $ref: '#/definitions/internal_handlers.skillVisibilityReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.SkillGroup'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.SkillGroup'
         "400":
           description: Bad Request
           schema:
@@ -1894,7 +2070,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handlers.loginRequest'
+          $ref: '#/definitions/internal_handlers.loginRequest'
       produces:
       - application/json
       responses:
@@ -1932,7 +2108,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.User'
         "401":
           description: Unauthorized
           schema:
@@ -1961,7 +2137,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/portfolio-website-backend_internal_models.User'
         "400":
           description: Bad Request
           schema:
@@ -1999,7 +2175,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PublicDataResponse'
+            $ref: '#/definitions/portfolio-website-backend_internal_dto.PublicDataResponse'
         "400":
           description: Bad Request
           schema:

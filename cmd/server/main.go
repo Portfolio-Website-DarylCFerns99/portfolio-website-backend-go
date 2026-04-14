@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"portfolio-website-backend/internal/config"
 	"portfolio-website-backend/internal/database"
 	"portfolio-website-backend/internal/handlers"
 	"portfolio-website-backend/internal/middleware"
@@ -53,6 +54,9 @@ func main() {
 	projectCategoryService := services.NewProjectCategoryService(projectCategoryRepo)
 	reviewService := services.NewReviewService(reviewRepo)
 	skillService := services.NewSkillService(skillRepo)
+	chatService := services.NewChatService(db)
+	vectorService := services.NewVectorService(db)
+	chatRepo := repository.NewChatRepository(db)
 
 	// Initialize Gin router
 	r := gin.Default()
@@ -77,6 +81,7 @@ func main() {
 	projectCategoryHandler := handlers.NewProjectCategoryHandler(projectCategoryService)
 	reviewHandler := handlers.NewReviewHandler(reviewService)
 	skillHandler := handlers.NewSkillHandler(skillService)
+	chatHandler := handlers.NewChatHandler(chatService, vectorService, chatRepo)
 
 	// Register Routes
 	userHandler.RegisterRoutes(apiGroup, authMiddleware, adminAuthMiddleware)
@@ -85,6 +90,7 @@ func main() {
 	projectCategoryHandler.RegisterRoutes(apiGroup, authMiddleware)
 	reviewHandler.RegisterRoutes(apiGroup, authMiddleware)
 	skillHandler.RegisterRoutes(apiGroup, authMiddleware)
+	chatHandler.RegisterRoutes(apiGroup, authMiddleware)
 
 	// Swagger API Docs
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -104,10 +110,11 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"message": "Welcome to the Portfolio Website API"})
 	})
 
-	log.Println("Server is starting on port 8000...")
+	addr := config.Envs.IPAddr + ":" + config.Envs.Port
+	log.Printf("Server is starting on %s...", addr)
 
 	// Start server
-	if err := r.Run("10.5.0.2:8000"); err != nil {
+	if err := r.Run(addr); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

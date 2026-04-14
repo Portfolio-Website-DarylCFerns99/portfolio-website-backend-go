@@ -12,6 +12,10 @@ type Config struct {
 	// Database settings
 	DatabaseURL string `env:"DATABASE_URL"`
 
+	// Server settings
+	Port   string `env:"PORT" envDefault:"8000"`
+	IPAddr string `env:"IP_ADDR" envDefault:"localhost"`
+
 	// API settings
 	APIPrefix string `env:"API_PREFIX" envDefault:"/api/v1"`
 	Debug     bool   `env:"DEBUG" envDefault:"false"`

@@ -4,7 +4,7 @@
 ![Gin](https://img.shields.io/badge/Gin-1.9-green.svg)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)
 ![GORM](https://img.shields.io/badge/GORM-V2-orange.svg)
-![CI](https://github.com/your-username/portfolio-website-backend-go/actions/workflows/test.yml/badge.svg)
+![CI](https://github.com/DarylFernandes99/portfolio-website-backend-go/actions/workflows/test.yml/badge.svg)
 
 A modernized multi-tenant backend utilizing the Go Gin web framework and Clean Architecture. This API manages user portfolios including projects, experiences, skills, and reviews with JWT authentication and rigorous test coverage across all domains.
 
@@ -24,6 +24,8 @@ A modernized multi-tenant backend utilizing the Go Gin web framework and Clean A
 - **JWT Authentication**: Middleware securely validates tokens across all admin and private endpoints.
 - **Admin Auth**: Separate `X-Admin-Api-Key` header auth for privileged provisioning endpoints.
 - **Swagger Documentation**: Declarative annotations generating a dynamic OpenAPI Swagger Dashboard.
+- **AI Chatbot & Dynamic RAG**: Built-in websocket chat endpoint powered by Google's Gemini LLM. Uses `pgvector` for semantic search across portfolio records, providing fully dynamic context integration without rigid keyword restrictions.
+- **Multitenant Vector Store**: All RAG embeddings are strictly segregated by `user_id`, ensuring the chatbot securely synthesizes data from the active portfolio owner.
 - **Health Check**: Database connectivity monitoring via `/healthz`.
 - **CI/CD Pipeline**: GitHub Actions workflow runs the full test suite against a real `pgvector/pgvector:pg15` service container on every pull request.
 
@@ -101,6 +103,14 @@ A modernized multi-tenant backend utilizing the Go Gin web framework and Clean A
 | `PATCH` | `/api/v1/skills/:skill_id/visibility` | 🔒 JWT | Toggle skill visibility |
 | `DELETE` | `/api/v1/skills/:skill_id` | 🔒 JWT | Delete a skill |
 | `GET` | `/api/v1/skills/public/:user_id` | — | List visible skill groups with their skills (public) |
+
+### Chatbot & RAG
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/v1/chatbot/sync` | 🔒 JWT | Triggers a sync of user portfolio data into vector embeddings |
+| `GET` | `/api/v1/chatbot/sessions` | 🔒 JWT | List all historical chat sessions (pagination supported) |
+| `GET` | `/api/v1/chatbot/sessions/:session_id/messages` | 🔒 JWT | Get messages for a specific session |
+| `WS`   | `/api/v1/chatbot/ws/chat` | — | Realtime WebSocket chat stream (requires `session_id` and `user_id` query params) |
 
 ### Admin (API-Key Protected)
 | Method | Endpoint | Auth | Description |
@@ -193,7 +203,7 @@ go run scripts/manage_user.go get --id <uuid>
 
 ## 🧪 Testing
 
-The project has a comprehensive test suite across all 6 domains (Users, Experiences, Projects, Project Categories, Reviews, Skills), each with:
+The project has a comprehensive test suite across all 7 domains (Users, Experiences, Projects, Project Categories, Reviews, Skills, Chatbot), each with:
 
 - **Unit tests** — Service layer tested with `testify/mock`.
 - **Integration tests** — Repository layer tested against a live Postgres instance.
