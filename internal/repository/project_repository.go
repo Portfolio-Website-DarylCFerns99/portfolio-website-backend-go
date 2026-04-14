@@ -83,6 +83,24 @@ func (r *projectRepository) Update(userID uuid.UUID, id uuid.UUID, data map[stri
 		return nil, err
 	}
 
+	// Normalize JSONB fields: JSON deserialization yields []interface{} for arrays,
+	// but Postgres needs the custom driver.Valuer (JSONStringArray) to encode them
+	// as proper JSON bytes. Without this, GORM sends a Go record instead of jsonb.
+	if raw, ok := data["tags"]; ok {
+		switch v := raw.(type) {
+		case []interface{}:
+			tags := make(models.JSONStringArray, 0, len(v))
+			for _, item := range v {
+				if s, ok := item.(string); ok {
+					tags = append(tags, s)
+				}
+			}
+			data["tags"] = tags
+		case []string:
+			data["tags"] = models.JSONStringArray(v)
+		}
+	}
+
 	if err := r.db.Model(&project).Updates(data).Error; err != nil {
 		return nil, err
 	}

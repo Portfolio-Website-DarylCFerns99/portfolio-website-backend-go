@@ -4,7 +4,6 @@
 ![Gin](https://img.shields.io/badge/Gin-1.9-green.svg)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)
 ![GORM](https://img.shields.io/badge/GORM-V2-orange.svg)
-![CI](https://github.com/DarylFernandes99/portfolio-website-backend-go/actions/workflows/test.yml/badge.svg)
 
 A modernized multi-tenant backend utilizing the Go Gin web framework and Clean Architecture. This API manages user portfolios including projects, experiences, skills, and reviews with JWT authentication and rigorous test coverage across all domains.
 

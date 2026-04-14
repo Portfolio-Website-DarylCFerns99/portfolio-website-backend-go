@@ -14,12 +14,15 @@ import (
 )
 
 func getAdminURL(endpoint string) string {
-	// The server uses localhost:8000/api/v1 by default
+	adminURL := os.Getenv("ADMIN_URL")
+	if adminURL == "" {
+		adminURL = "http://localhost:8000"
+	}
 	apiPrefix := os.Getenv("API_PREFIX")
 	if apiPrefix == "" {
 		apiPrefix = "/api/v1"
 	}
-	return fmt.Sprintf("http://localhost:8000%s/admin/%s", apiPrefix, endpoint)
+	return fmt.Sprintf("%s%s/admin/%s", adminURL, apiPrefix, endpoint)
 }
 
 func defaultHeaders(req *http.Request) {
