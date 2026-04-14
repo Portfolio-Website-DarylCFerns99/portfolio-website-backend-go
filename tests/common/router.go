@@ -14,6 +14,7 @@ func SetupRouter(testUser *models.User, registerRoutes func(r *gin.RouterGroup, 
 	authMiddleware := func(c *gin.Context) {
 		if testUser != nil {
 			c.Set("current_user", testUser)
+			c.Set("user_id", testUser.ID)
 		}
 		c.Next()
 	}
@@ -31,6 +32,7 @@ func SetupRouterWithAdmin(testUser *models.User, customAuthMiddleware gin.Handle
 		customAuthMiddleware = func(c *gin.Context) {
 			if testUser != nil {
 				c.Set("current_user", testUser)
+				c.Set("user_id", testUser.ID)
 			}
 			c.Next()
 		}

@@ -15,6 +15,227 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/chatbot/sessions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve active chat sessions for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Chatbot"
+                ],
+                "summary": "Get Chat Sessions",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 50,
+                        "description": "Limit number of sessions",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/portfolio-website-backend_internal_dto.ChatSessionResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/sessions/{session_id}/messages": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve the message history for a specific chat session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Chatbot"
+                ],
+                "summary": "Get Session Messages",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Session UUID",
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/portfolio-website-backend_internal_dto.ChatMessageResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/sync": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Triggers a manual refresh of the Vector Store for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Chatbot"
+                ],
+                "summary": "Sync Vector Context",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/ws/chat": {
+            "get": {
+                "description": "Initiates a WebSocket connection for real-time portfolio chat. Requires session_id and user_id.",
+                "tags": [
+                    "Chatbot"
+                ],
+                "summary": "WebSocket Chat Endpoint",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Client Chat Session UUID",
+                        "name": "session_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Portfolio Owner UUID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "101": {
+                        "description": "Switching Protocols to WebSockets"
+                    }
+                }
+            }
+        },
         "/experiences": {
             "get": {
                 "security": [
@@ -101,7 +322,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Experience"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Experience"
                         }
                     }
                 ],
@@ -109,7 +330,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Experience"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Experience"
                         }
                     },
                     "400": {
@@ -225,7 +446,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Experience"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Experience"
                         }
                     },
                     "400": {
@@ -284,7 +505,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Experience"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Experience"
                         }
                     },
                     "400": {
@@ -382,7 +603,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.visibilityReq"
+                            "$ref": "#/definitions/internal_handlers.visibilityReq"
                         }
                     }
                 ],
@@ -390,7 +611,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Experience"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Experience"
                         }
                     },
                     "400": {
@@ -448,7 +669,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.ProjectCategory"
+                                "$ref": "#/definitions/portfolio-website-backend_internal_models.ProjectCategory"
                             }
                         }
                     },
@@ -492,7 +713,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.CategoryCreateReq"
+                            "$ref": "#/definitions/internal_handlers.CategoryCreateReq"
                         }
                     }
                 ],
@@ -500,7 +721,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.ProjectCategory"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.ProjectCategory"
                         }
                     },
                     "400": {
@@ -560,7 +781,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.ProjectCategory"
+                                "$ref": "#/definitions/portfolio-website-backend_internal_models.ProjectCategory"
                             }
                         }
                     },
@@ -612,7 +833,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ProjectCategory"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.ProjectCategory"
                         }
                     },
                     "400": {
@@ -671,7 +892,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ProjectCategory"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.ProjectCategory"
                         }
                     },
                     "400": {
@@ -769,7 +990,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.categoryVisibilityReq"
+                            "$ref": "#/definitions/internal_handlers.categoryVisibilityReq"
                         }
                     }
                 ],
@@ -777,7 +998,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ProjectCategory"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.ProjectCategory"
                         }
                     },
                     "400": {
@@ -877,7 +1098,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.ProjectCreateReq"
+                            "$ref": "#/definitions/internal_handlers.ProjectCreateReq"
                         }
                     }
                 ],
@@ -885,7 +1106,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Project"
                         }
                     },
                     "400": {
@@ -995,7 +1216,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Project"
                         }
                     },
                     "400": {
@@ -1054,7 +1275,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Project"
                         }
                     },
                     "400": {
@@ -1152,7 +1373,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.projectVisibilityReq"
+                            "$ref": "#/definitions/internal_handlers.projectVisibilityReq"
                         }
                     }
                 ],
@@ -1160,7 +1381,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Project"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Project"
                         }
                     },
                     "400": {
@@ -1260,7 +1481,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Review"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Review"
                         }
                     }
                 ],
@@ -1268,7 +1489,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Review"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Review"
                         }
                     },
                     "400": {
@@ -1378,7 +1599,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Review"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Review"
                         }
                     },
                     "400": {
@@ -1437,7 +1658,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Review"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Review"
                         }
                     },
                     "400": {
@@ -1535,7 +1756,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.reviewVisibilityReq"
+                            "$ref": "#/definitions/internal_handlers.reviewVisibilityReq"
                         }
                     }
                 ],
@@ -1543,7 +1764,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Review"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Review"
                         }
                     },
                     "400": {
@@ -1643,7 +1864,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Skill"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Skill"
                         }
                     }
                 ],
@@ -1651,7 +1872,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Skill"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Skill"
                         }
                     },
                     "400": {
@@ -1751,7 +1972,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.SkillGroup"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.SkillGroup"
                         }
                     }
                 ],
@@ -1759,7 +1980,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.SkillGroup"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.SkillGroup"
                         }
                     },
                     "400": {
@@ -1810,7 +2031,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SkillGroup"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.SkillGroup"
                         }
                     },
                     "400": {
@@ -1869,7 +2090,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SkillGroup"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.SkillGroup"
                         }
                     },
                     "400": {
@@ -1967,7 +2188,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.skillVisibilityReq"
+                            "$ref": "#/definitions/internal_handlers.skillVisibilityReq"
                         }
                     }
                 ],
@@ -1975,7 +2196,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SkillGroup"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.SkillGroup"
                         }
                     },
                     "400": {
@@ -2085,7 +2306,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Skill"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Skill"
                         }
                     },
                     "400": {
@@ -2144,7 +2365,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Skill"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Skill"
                         }
                     },
                     "400": {
@@ -2242,7 +2463,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.skillVisibilityReq"
+                            "$ref": "#/definitions/internal_handlers.skillVisibilityReq"
                         }
                     }
                 ],
@@ -2250,7 +2471,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Skill"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.Skill"
                         }
                     },
                     "400": {
@@ -2290,7 +2511,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.loginRequest"
+                            "$ref": "#/definitions/internal_handlers.loginRequest"
                         }
                     }
                 ],
@@ -2348,7 +2569,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.User"
                         }
                     },
                     "401": {
@@ -2393,7 +2614,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.User"
                         }
                     },
                     "400": {
@@ -2446,7 +2667,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PublicDataResponse"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_dto.PublicDataResponse"
                         }
                     },
                     "400": {
@@ -2475,204 +2696,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.ProjectData": {
-            "type": "object",
-            "properties": {
-                "additional_data": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "project_category_id": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.PublicDataResponse": {
-            "type": "object",
-            "properties": {
-                "about": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "availability": {
-                    "type": "string"
-                },
-                "avatar": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "featuredSkills": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.SkillData"
-                    }
-                },
-                "heroStats": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "location": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "projectCategories": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.ProjectCategory"
-                    }
-                },
-                "projects": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.ProjectData"
-                    }
-                },
-                "projectsSection": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "reviews": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Review"
-                    }
-                },
-                "skillGroups": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.SkillGroupData"
-                    }
-                },
-                "skillsSection": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "socialLinks": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "additionalProperties": true
-                    }
-                },
-                "surname": {
-                    "type": "string"
-                },
-                "timelineData": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.TimelineItem"
-                    }
-                },
-                "timelineSection": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.SkillData": {
-            "type": "object",
-            "properties": {
-                "color": {
-                    "type": "string"
-                },
-                "icon": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "proficiency": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.SkillGroupData": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "skills": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.SkillData"
-                    }
-                }
-            }
-        },
-        "dto.TimelineItem": {
-            "type": "object",
-            "properties": {
-                "company": {
-                    "type": "string"
-                },
-                "degree": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "institution": {
-                    "type": "string"
-                },
-                "period": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "year": {
-                    "type": "integer"
-                }
-            }
-        },
-        "handlers.CategoryCreateReq": {
+        "internal_handlers.CategoryCreateReq": {
             "type": "object",
             "required": [
                 "name"
@@ -2689,7 +2713,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.ProjectCreateReq": {
+        "internal_handlers.ProjectCreateReq": {
             "type": "object",
             "required": [
                 "title",
@@ -2729,7 +2753,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.categoryVisibilityReq": {
+        "internal_handlers.categoryVisibilityReq": {
             "type": "object",
             "properties": {
                 "is_visible": {
@@ -2737,7 +2761,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.loginRequest": {
+        "internal_handlers.loginRequest": {
             "type": "object",
             "required": [
                 "password",
@@ -2752,7 +2776,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.projectVisibilityReq": {
+        "internal_handlers.projectVisibilityReq": {
             "type": "object",
             "properties": {
                 "is_visible": {
@@ -2760,7 +2784,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.reviewVisibilityReq": {
+        "internal_handlers.reviewVisibilityReq": {
             "type": "object",
             "properties": {
                 "is_visible": {
@@ -2768,7 +2792,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.skillVisibilityReq": {
+        "internal_handlers.skillVisibilityReq": {
             "type": "object",
             "properties": {
                 "is_visible": {
@@ -2776,7 +2800,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.visibilityReq": {
+        "internal_handlers.visibilityReq": {
             "type": "object",
             "properties": {
                 "is_visible": {
@@ -2784,7 +2808,250 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Experience": {
+        "portfolio-website-backend_internal_dto.ChatMessageResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "sender": {
+                    "description": "mapped from 'role'",
+                    "type": "string"
+                }
+            }
+        },
+        "portfolio-website-backend_internal_dto.ChatSessionResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_active": {
+                    "type": "string"
+                },
+                "message_count": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "portfolio-website-backend_internal_dto.ProjectData": {
+            "type": "object",
+            "properties": {
+                "additional_data": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "project_category_id": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "portfolio-website-backend_internal_dto.PublicDataResponse": {
+            "type": "object",
+            "properties": {
+                "about": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "availability": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "featuredSkills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/portfolio-website-backend_internal_dto.SkillData"
+                    }
+                },
+                "heroStats": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "location": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "projectCategories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/portfolio-website-backend_internal_models.ProjectCategory"
+                    }
+                },
+                "projects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/portfolio-website-backend_internal_dto.ProjectData"
+                    }
+                },
+                "projectsSection": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "reviews": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/portfolio-website-backend_internal_models.Review"
+                    }
+                },
+                "skillGroups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/portfolio-website-backend_internal_dto.SkillGroupData"
+                    }
+                },
+                "skillsSection": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "socialLinks": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                    }
+                },
+                "surname": {
+                    "type": "string"
+                },
+                "timelineData": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/portfolio-website-backend_internal_dto.TimelineItem"
+                    }
+                },
+                "timelineSection": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "portfolio-website-backend_internal_dto.SkillData": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "proficiency": {
+                    "type": "integer"
+                }
+            }
+        },
+        "portfolio-website-backend_internal_dto.SkillGroupData": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/portfolio-website-backend_internal_dto.SkillData"
+                    }
+                }
+            }
+        },
+        "portfolio-website-backend_internal_dto.TimelineItem": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "period": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "portfolio-website-backend_internal_models.DateOnly": {
+            "type": "object",
+            "properties": {
+                "time.Time": {
+                    "type": "string"
+                }
+            }
+        },
+        "portfolio-website-backend_internal_models.Experience": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2794,7 +3061,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "end_date": {
-                    "type": "string"
+                    "$ref": "#/definitions/portfolio-website-backend_internal_models.DateOnly"
                 },
                 "id": {
                     "type": "string"
@@ -2806,7 +3073,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "start_date": {
-                    "type": "string"
+                    "$ref": "#/definitions/portfolio-website-backend_internal_models.DateOnly"
                 },
                 "title": {
                     "type": "string"
@@ -2823,18 +3090,18 @@ const docTemplate = `{
                 }
             }
         },
-        "models.JSONMap": {
+        "portfolio-website-backend_internal_models.JSONMap": {
             "type": "object",
             "additionalProperties": true
         },
-        "models.Project": {
+        "portfolio-website-backend_internal_models.Project": {
             "type": "object",
             "properties": {
                 "additional_data": {
                     "description": "Store complete GitHub API response",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/models.JSONMap"
+                            "$ref": "#/definitions/portfolio-website-backend_internal_models.JSONMap"
                         }
                     ]
                 },
@@ -2859,7 +3126,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "project_category": {
-                    "$ref": "#/definitions/models.ProjectCategory"
+                    "$ref": "#/definitions/portfolio-website-backend_internal_models.ProjectCategory"
                 },
                 "project_category_id": {
                     "type": "string"
@@ -2891,7 +3158,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ProjectCategory": {
+        "portfolio-website-backend_internal_models.ProjectCategory": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2917,7 +3184,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Review": {
+        "portfolio-website-backend_internal_models.Review": {
             "type": "object",
             "properties": {
                 "avatar": {
@@ -2955,7 +3222,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Skill": {
+        "portfolio-website-backend_internal_models.Skill": {
             "type": "object",
             "properties": {
                 "color": {
@@ -2990,7 +3257,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.SkillGroup": {
+        "portfolio-website-backend_internal_models.SkillGroup": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -3008,7 +3275,7 @@ const docTemplate = `{
                 "skills": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Skill"
+                        "$ref": "#/definitions/portfolio-website-backend_internal_models.Skill"
                     }
                 },
                 "updated_at": {
@@ -3019,11 +3286,11 @@ const docTemplate = `{
                 }
             }
         },
-        "models.User": {
+        "portfolio-website-backend_internal_models.User": {
             "type": "object",
             "properties": {
                 "about": {
-                    "$ref": "#/definitions/models.JSONMap"
+                    "$ref": "#/definitions/portfolio-website-backend_internal_models.JSONMap"
                 },
                 "availability": {
                     "type": "string"
