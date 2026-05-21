@@ -59,14 +59,15 @@ func (h *ProjectHandler) getUserID(c *gin.Context) (uuid.UUID, bool) {
 }
 
 type ProjectCreateReq struct {
-	Title             string     `json:"title" binding:"required"`
-	Description       *string    `json:"description"`
-	Type              string     `json:"type" binding:"required,oneof=github custom"`
-	Image             *string    `json:"image"`
-	Tags              []string   `json:"tags"`
-	URL               *string    `json:"url"`
-	IsVisible         bool       `json:"is_visible"`
-	ProjectCategoryID *uuid.UUID `json:"project_category_id"`
+	Title             string         `json:"title" binding:"required"`
+	Description       *string        `json:"description"`
+	Type              string         `json:"type" binding:"required,oneof=github custom"`
+	Image             *string        `json:"image"`
+	Tags              []string       `json:"tags"`
+	URL               *string        `json:"url"`
+	AdditionalData    models.JSONMap `json:"additional_data"`
+	IsVisible         bool           `json:"is_visible"`
+	ProjectCategoryID *uuid.UUID     `json:"project_category_id"`
 }
 
 // CreateProject
@@ -101,6 +102,7 @@ func (h *ProjectHandler) CreateProject(c *gin.Context) {
 		Image:             req.Image,
 		Tags:              req.Tags,
 		URL:               req.URL,
+		AdditionalData:    req.AdditionalData,
 		IsVisible:         req.IsVisible,
 		ProjectCategoryID: req.ProjectCategoryID,
 	}

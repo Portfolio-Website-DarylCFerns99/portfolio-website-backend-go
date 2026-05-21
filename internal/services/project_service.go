@@ -137,26 +137,49 @@ func (s *projectService) UpdateProject(userID uuid.UUID, id uuid.UUID, updateDat
 		return nil, err
 	}
 
-	if pType, ok := updateData["type"].(string); ok && pType == "github" {
+	// Sanitize update data to only allow modifiable database fields
+	allowedFields := map[string]bool{
+		"project_category_id": true,
+		"type":                true,
+		"title":               true,
+		"description":         true,
+		"image":               true,
+		"tags":                true,
+		"url":                 true,
+		"additional_data":     true,
+		"expiry_date":         true,
+		"is_visible":          true,
+		"published_at":        true,
+	}
+
+	sanitizedData := make(map[string]interface{})
+	for k, v := range updateData {
+		if allowedFields[k] {
+			sanitizedData[k] = v
+		}
+	}
+
+	pType, pTypeOk := sanitizedData["type"].(string)
+	if pTypeOk && pType == "github" {
 		url := project.URL
-		if updateUrlStr, uOk := updateData["url"].(string); uOk {
+		if updateUrlStr, uOk := sanitizedData["url"].(string); uOk {
 			url = &updateUrlStr
 		}
 		if url != nil && *url != "" {
 			_, githubFullData, fetchErr := utils.FetchGithubData(*url)
 			if fetchErr == nil {
-				updateData["additional_data"] = githubFullData
+				sanitizedData["additional_data"] = githubFullData
 				newExpiry := time.Now().UTC().Add(24 * time.Hour)
-				updateData["expiry_date"] = &newExpiry
+				sanitizedData["expiry_date"] = &newExpiry
 			} else {
 				log.Printf("Error fetching GitHub data during update for project %s: %v", id, fetchErr)
 			}
 		}
-	} else if pType == "custom" {
-		updateData["expiry_date"] = nil
+	} else if pTypeOk && pType == "custom" {
+		sanitizedData["expiry_date"] = nil
 	}
 
-	return s.repo.Update(userID, id, updateData)
+	return s.repo.Update(userID, id, sanitizedData)
 }
 
 func (s *projectService) UpdateProjectVisibility(userID uuid.UUID, id uuid.UUID, isVisible bool) (*models.Project, error) {
