@@ -42,6 +42,7 @@ type ProjectData struct {
 	AdditionalData    map[string]interface{} `json:"additional_data"`
 	CreatedAt         time.Time              `json:"created_at"`
 	ProjectCategoryID string                 `json:"project_category_id"`
+	IsFeatured        bool                   `json:"is_featured"`
 }
 
 type PublicDataResponse struct {
@@ -65,4 +66,5 @@ type PublicDataResponse struct {
 	ProjectCategories []models.ProjectCategory `json:"projectCategories"`
 	Projects          []ProjectData            `json:"projects"`
 	Reviews           []models.Review          `json:"reviews"`
+	Services          []map[string]interface{} `json:"services"`
 }

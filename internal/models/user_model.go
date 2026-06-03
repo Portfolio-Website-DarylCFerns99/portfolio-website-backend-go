@@ -121,4 +121,5 @@ type User struct {
 	SocialLinks      JSONMapArray    `gorm:"type:jsonb" json:"social_links,omitempty"`
 	About            JSONMap         `gorm:"type:jsonb" json:"about,omitempty"`
 	FeaturedSkillIDs JSONStringArray `gorm:"type:jsonb;default:'[]'" json:"featured_skill_ids"`
+	Services         JSONMapArray    `gorm:"type:jsonb" json:"services,omitempty"`
 }

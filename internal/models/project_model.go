@@ -22,5 +22,6 @@ type Project struct {
 	AdditionalData    JSONMap          `gorm:"type:jsonb" json:"additional_data,omitempty"`   // Store complete GitHub API response
 	ExpiryDate        *time.Time       `gorm:"type:timestamptz" json:"expiry_date,omitempty"` // Expiry date for non-custom projects
 	IsVisible         bool             `gorm:"default:false" json:"is_visible"`
+	IsFeatured        bool             `gorm:"default:false" json:"is_featured"`
 	PublishedAt       *time.Time       `gorm:"type:timestamptz" json:"published_at,omitempty"`
 }

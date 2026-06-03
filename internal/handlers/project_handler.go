@@ -67,6 +67,7 @@ type ProjectCreateReq struct {
 	URL               *string        `json:"url"`
 	AdditionalData    models.JSONMap `json:"additional_data"`
 	IsVisible         bool           `json:"is_visible"`
+	IsFeatured        bool           `json:"is_featured"`
 	ProjectCategoryID *uuid.UUID     `json:"project_category_id"`
 }
 
@@ -104,6 +105,7 @@ func (h *ProjectHandler) CreateProject(c *gin.Context) {
 		URL:               req.URL,
 		AdditionalData:    req.AdditionalData,
 		IsVisible:         req.IsVisible,
+		IsFeatured:        req.IsFeatured,
 		ProjectCategoryID: req.ProjectCategoryID,
 	}
 

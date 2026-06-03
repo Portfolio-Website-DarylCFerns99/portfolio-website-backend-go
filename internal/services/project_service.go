@@ -149,6 +149,7 @@ func (s *projectService) UpdateProject(userID uuid.UUID, id uuid.UUID, updateDat
 		"additional_data":     true,
 		"expiry_date":         true,
 		"is_visible":          true,
+		"is_featured":         true,
 		"published_at":        true,
 	}
 

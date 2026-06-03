@@ -105,6 +105,28 @@ func (s *userService) UpdateUserProfile(id uuid.UUID, updateData map[string]inte
 		}
 	}
 
+	// Convert services to JSONMapArray so GORM serializes it correctly instead of storing it as a generic object or raw bytes
+	if srv, ok := updateData["services"]; ok {
+		// Attempt to read it as a slice of maps
+		if srvSlice, isSlice := srv.([]interface{}); isSlice {
+			var jsonMapArray models.JSONMapArray
+			for _, item := range srvSlice {
+				if m, isMap := item.(map[string]interface{}); isMap {
+					jsonMapArray = append(jsonMapArray, m)
+				}
+			}
+			updateData["services"] = jsonMapArray
+		} else if srvMap, isMap := srv.(map[string]interface{}); isMap {
+			// If frontend accidentally sends a single object, wrap it
+			updateData["services"] = models.JSONMapArray{srvMap}
+		} else if srvBytes, isBytes := srv.([]byte); isBytes {
+			var parsed models.JSONMapArray
+			if err := parsed.Scan(srvBytes); err == nil {
+				updateData["services"] = parsed
+			}
+		}
+	}
+
 	// Delegate to repository
 	return s.userRepo.Update(id, updateData)
 }
@@ -221,6 +243,7 @@ func (s *userService) GetPublicPortfolioData(userID uuid.UUID) (*dto.PublicDataR
 			AdditionalData:    p.AdditionalData,
 			CreatedAt:         p.CreatedAt,
 			ProjectCategoryID: catID,
+			IsFeatured:        p.IsFeatured,
 		})
 	}
 
@@ -318,5 +341,12 @@ func (s *userService) GetPublicPortfolioData(userID uuid.UUID) (*dto.PublicDataR
 		ProjectCategories: categories,
 		Projects:          formattedProjects,
 		Reviews:           reviews,
+		Services: func() []map[string]interface{} {
+			res := []map[string]interface{}(user.Services)
+			if res == nil {
+				return []map[string]interface{}{}
+			}
+			return res
+		}(),
 	}, nil
 }
