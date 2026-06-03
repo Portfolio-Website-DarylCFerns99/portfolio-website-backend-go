@@ -94,18 +94,73 @@ func (s *chatService) BuildChatHistory(sessionID uuid.UUID, limit int) ([]*genai
 	return history, payload, nil
 }
 
-func (s *chatService) GenerateStream(ctx context.Context, sessionID, userID uuid.UUID, query string, history []*genai.Content) (*genai.GenerateContentResponseIterator, *genai.Client, error) {
+func (s *chatService) condenseQuery(ctx context.Context, client *genai.Client, query string, history []*genai.Content) string {
+	if len(history) == 0 {
+		return query
+	}
 
-	docs, err := s.vectorSvc.Search(ctx, query, userID, 100, nil)
+	modelName := config.Envs.GeminiModel
+	if modelName == "" {
+		modelName = "gemini-1.5-flash"
+	}
+	model := client.GenerativeModel(modelName)
+
+	var builder strings.Builder
+	for _, h := range history {
+		role := "User"
+		if h.Role == "model" {
+			role = "Assistant"
+		}
+		for _, part := range h.Parts {
+			if txt, ok := part.(genai.Text); ok {
+				builder.WriteString(fmt.Sprintf("%s: %s\n", role, string(txt)))
+			}
+		}
+	}
+	builder.WriteString(fmt.Sprintf("User: %s\n", query))
+
+	prompt := fmt.Sprintf(`Given the following conversation history and the user's latest follow-up question, rewrite it into a single standalone search query containing all necessary context. Do NOT add any preamble, explanation, or formatting. Output ONLY the rewritten standalone query.
+
+Conversation History:
+%s
+Standalone query:`, builder.String())
+
+	resp, err := model.GenerateContent(ctx, genai.Text(prompt))
+	if err != nil || resp == nil || len(resp.Candidates) == 0 || len(resp.Candidates[0].Content.Parts) == 0 {
+		return query
+	}
+
+	if txt, ok := resp.Candidates[0].Content.Parts[0].(genai.Text); ok {
+		condensed := strings.TrimSpace(string(txt))
+		if condensed != "" {
+			return condensed
+		}
+	}
+	return query
+}
+
+func (s *chatService) GenerateStream(ctx context.Context, sessionID, userID uuid.UUID, query string, history []*genai.Content) (*genai.GenerateContentResponseIterator, *genai.Client, error) {
+	client, err := s.llmFactory.CreateGeminiClient(ctx)
 	if err != nil {
+		return nil, nil, err
+	}
+
+	searchQuery := query
+	if len(history) > 0 {
+		searchQuery = s.condenseQuery(ctx, client, query, history)
+	}
+
+	docs, err := s.vectorSvc.Search(ctx, searchQuery, userID, 7, nil)
+	if err != nil {
+		client.Close()
 		return nil, nil, err
 	}
 
 	var contexts []string
 	for _, d := range docs {
-		contexts = append(contexts, d.Content)
+		contexts = append(contexts, fmt.Sprintf("- %s", d.Content))
 	}
-	contextText := strings.Join(contexts, "\n\n")
+	contextText := strings.Join(contexts, "\n")
 
 	// Get User info for prompt
 	var user models.User
@@ -122,12 +177,6 @@ If the answer is not in the context, just say you don't know, but be friendly.
 
 CONTEXT:
 %s`, portfolioOwner, contextText)
-
-	// 4. Initialize Gemini
-	client, err := s.llmFactory.CreateGeminiClient(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
 
 	modelName := config.Envs.GeminiModel
 	if modelName == "" {

@@ -275,7 +275,7 @@ func (h *ChatHandler) WebsocketChat(c *gin.Context) {
 				// iterator.Done is not exposed in standard way in some sdks, usually err is iterator.Done
 				break
 			}
-			
+
 			if resp != nil && len(resp.Candidates) > 0 {
 				for _, part := range resp.Candidates[0].Content.Parts {
 					if text, ok := part.(genai.Text); ok {
@@ -285,16 +285,16 @@ func (h *ChatHandler) WebsocketChat(c *gin.Context) {
 				}
 			}
 		}
-		
+
 		// Wait, the SDK uses genai.Text so it's not string. It's type Text string
 		// Let me refine the string extraction logic below to handle it safely
-		
+
 		// In previous block: if text, ok := part.(string); ok is wrong, it's genai.Text
 		// Let's rely on type switch or fmt.Sprintf
-		
+
 		// Send End of stream
 		ws.WriteJSON(dto.WsMessage{Type: "end"})
-		
+
 		// Wait, I messed up the loop variable state and iterator above, let me just fix it here:
 		// Since I can't overwrite the loop variables easily inline here, let me use multi replace below to fix the type assertion
 		client.Close()

@@ -143,6 +143,15 @@ func (s *vectorService) SyncUserData(ctx context.Context, userID uuid.UUID) (map
 		if err == nil {
 			totalCount++
 		}
+
+		// 6. Extra RAG Info (Private)
+		if user.ExtraRagInfo != nil && *user.ExtraRagInfo != "" {
+			extraContent := fmt.Sprintf("Extra background information about %s (visa status, availability, preferences, work details): %s", name, *user.ExtraRagInfo)
+			err := s.saveVector(ctx, extraContent, "extra_rag_info", &user.ID, userID)
+			if err == nil {
+				totalCount++
+			}
+		}
 	}
 
 	return map[string]interface{}{

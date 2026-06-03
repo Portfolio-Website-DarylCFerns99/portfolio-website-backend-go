@@ -134,4 +134,5 @@ type User struct {
 	About            JSONMap         `gorm:"type:jsonb" json:"about,omitempty"`
 	FeaturedSkillIDs JSONStringArray `gorm:"type:jsonb;default:'[]'" json:"featured_skill_ids"`
 	Services         JSONMapArray    `gorm:"type:jsonb" json:"services,omitempty"`
+	ExtraRagInfo     *string         `gorm:"type:text" json:"extra_rag_info,omitempty"`
 }
