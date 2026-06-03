@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"encoding/json"
 	"errors"
+	"log"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -98,6 +100,28 @@ func (r *projectRepository) Update(userID uuid.UUID, id uuid.UUID, data map[stri
 			data["tags"] = tags
 		case []string:
 			data["tags"] = models.JSONStringArray(v)
+		}
+	}
+
+	if raw, ok := data["additional_data"]; ok {
+		if raw == nil {
+			data["additional_data"] = models.JSONMap(nil)
+		} else {
+			log.Printf("[ProjectRepository] raw type for additional_data: %T", raw)
+			switch v := raw.(type) {
+			case models.JSONMap:
+				// Already correct
+			case map[string]interface{}:
+				data["additional_data"] = models.JSONMap(v)
+			default:
+				// Marshal and unmarshal to ensure it is models.JSONMap
+				if bytes, err := json.Marshal(raw); err == nil {
+					var jsonMap models.JSONMap
+					if err := json.Unmarshal(bytes, &jsonMap); err == nil {
+						data["additional_data"] = jsonMap
+					}
+				}
+			}
 		}
 	}
 

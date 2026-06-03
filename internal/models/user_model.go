@@ -29,7 +29,11 @@ func (j JSONStringArray) Value() (driver.Value, error) {
 	if len(j) == 0 {
 		return "[]", nil
 	}
-	return json.Marshal(j)
+	bytes, err := json.Marshal(j)
+	if err != nil {
+		return nil, err
+	}
+	return string(bytes), nil
 }
 
 // JSONMap handles generic JSON objects stored in Postgres
@@ -55,7 +59,11 @@ func (j JSONMap) Value() (driver.Value, error) {
 	if j == nil {
 		return "{}", nil
 	}
-	return json.Marshal(j)
+	bytes, err := json.Marshal(j)
+	if err != nil {
+		return nil, err
+	}
+	return string(bytes), nil
 }
 
 // JSONMapArray handles arrays of JSON objects stored in Postgres
@@ -99,7 +107,11 @@ func (j JSONMapArray) Value() (driver.Value, error) {
 	if len(j) == 0 {
 		return "[]", nil
 	}
-	return json.Marshal(j)
+	bytes, err := json.Marshal(j)
+	if err != nil {
+		return nil, err
+	}
+	return string(bytes), nil
 }
 
 type User struct {
