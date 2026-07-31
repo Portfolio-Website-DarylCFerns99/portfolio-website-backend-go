@@ -131,20 +131,55 @@ func FetchGithubData(githubURL string) (map[string]interface{}, map[string]inter
 		return nil, nil, err
 	}
 
-	// Fetch README.md
-	rawGithubURL := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/main/", username, repoName)
-	readmeURL := rawGithubURL + "README.md"
+	// Determine default branch (defaults to "main" if not present)
+	branch := "main"
+	if b, ok := githubData["default_branch"].(string); ok && b != "" {
+		branch = b
+	}
 
-	readmeResp, err := client.Get(readmeURL)
-	if err == nil && readmeResp.StatusCode == http.StatusOK {
-		readmeBody, _ := io.ReadAll(readmeResp.Body)
-		githubData["readme_file"] = ConvertRelativeLinks(string(readmeBody), rawGithubURL, "main")
-		readmeResp.Body.Close()
-	} else {
-		githubData["readme_file"] = nil
+	// Determine owner type ("User" vs "Organization")
+	ownerType := "User"
+	if owner, ok := githubData["owner"].(map[string]interface{}); ok {
+		if t, ok := owner["type"].(string); ok && t != "" {
+			ownerType = t
+		}
+	}
+
+	// Helper to fetch README content from a raw base URL
+	baseRawURL := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/%s/", username, repoName, branch)
+
+	fetchReadme := func(rawBase string, filename string) (string, bool) {
+		readmeURL := rawBase + filename
+		readmeResp, err := client.Get(readmeURL)
+		if err == nil && readmeResp.StatusCode == http.StatusOK {
+			readmeBody, _ := io.ReadAll(readmeResp.Body)
+			readmeResp.Body.Close()
+			return ConvertRelativeLinks(string(readmeBody), rawBase, branch), true
+		}
 		if err == nil {
 			readmeResp.Body.Close()
 		}
+		return "", false
+	}
+
+	var readmeContent string
+	var readmeFound bool
+
+	if ownerType == "Organization" {
+		// Try profile/README.md for Organizations
+		profileRawURL := baseRawURL + "profile/"
+		readmeContent, readmeFound = fetchReadme(profileRawURL, "README.md")
+	}
+
+	if !readmeFound {
+		// Standard README.md path (for Users, or Org fallback)
+		readmeContent, readmeFound = fetchReadme(baseRawURL, "README.md")
+	}
+
+	if readmeFound {
+		githubData["readme_file"] = readmeContent
+	} else {
+		githubData["readme_file"] = nil
 	}
 
 	// Fetch languages
